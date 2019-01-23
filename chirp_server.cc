@@ -6,9 +6,9 @@
 #include <grpcpp/grpcpp.h>
 
 #ifdef BAZEL_BUILD
-#include "examples/protos/chirp.grpc.pb.h"
+// #include "examples/protos/chirp.grpc.pb.h"
 #else
-#include "chirp.grpc.pb.h"
+// #include "chirp.grpc.pb.h"
 #endif
 
 using grpc::Server;
@@ -36,21 +36,17 @@ class ChirpServiceImpl final : public Chirp::Service {
 
   Status Follow(ServerContext* context, const FollowRequest* request,
                        FollowReply* reply) override {
-    // std::string prefix("later ");
-    // reply->set_message(prefix + request->name());
-    // return Status::OK;
+
   }
 
   Status Read(ServerContext* context, const ReadRequest* request,
                   ReadReply* reply) override {
     
-
   }
 
   Status Monitor(ServerContext* context, const MonitorRequest* request,
                   MonitorReply* reply) override {
     
-
   }
 };
 
