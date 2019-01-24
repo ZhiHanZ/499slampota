@@ -22,7 +22,7 @@ using chirp::Read;
 using chirp::Monitor;
 
 // Logic and data behind the server's behavior.
-class ChirpServiceImpl final : public Chirp::Service {
+class ChirpServiceImpl final : public chirp::ServerLayer::Service {
   Status Register(ServerContext* context, const RegisterRequest* request,
                   RegisterReply* reply) override {
     // what is override???

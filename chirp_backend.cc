@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 
+using chirp::KeyValueStore
 // #include <grpcpp/grpcpp.h>
 
 #ifdef BAZEL_BUILD
@@ -13,16 +14,16 @@
 
 
 // Logic and data behind the server's behavior.
-class ChirpServiceImpl final : public Chirp::Service {
+class ChirpServiceImpl final : public chirp::KeyValueStore::Service {
 
-  PutReply Put(ServerContext* context, const PutRequest* request) override {
-    // or should return type be: "Status"???
+  Status Put(ServerContext* context, const PutRequest* request, PutReply* reply) override {
+    
   }
 
-  GetReply Get(ServerContext* context, const GetRequest* request) override {
+  Status Get(ServerContext* context, const GetRequest* request, GetReply* reply) override {
   }
 
-  DeleteKeyReply DeleteKey(ServerContext* context, const DelteKeyRequest* request) override {
+  Status DeleteKey(ServerContext* context, const DelteKeyRequest* request, DeleteKeyReply* reply) override {
   }
 };
 
