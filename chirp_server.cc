@@ -15,37 +15,31 @@ using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
-using chirp::Register;
-using chirp:Chirp;
-using chirp::Follow;
-using chirp::Read;
-using chirp::Monitor;
 
-// Logic and data behind the server's behavior.
-class ChirpServiceImpl final : public chirp::ServerLayer::Service {
-  Status Register(ServerContext* context, const RegisterRequest* request,
-                  RegisterReply* reply) override {
-    // what is override???
-    // do I change Status Register return type to Register Reply return type???
-    // where do all these types - like RegisterRequest/Replay get declared???
+
+
+class ServiceLayerServiceImpl final : public chirp::ServerLayer::Service {
+  Status Register(ServerContext* context, const chirp::RegisterRequest* request,
+                  chirp::RegisterReply* reply) override {
+    // TODO: 
   }
 
-  Status Chirp(ServerContext* context, const ChirpRequest* request,
-                       ChirpReply* reply) override {
+  Status Chirp(ServerContext* context, const chirp::ChirpRequest* request,
+                       chirp::ChirpReply* reply) override {
   }
 
-  Status Follow(ServerContext* context, const FollowRequest* request,
-                       FollowReply* reply) override {
+  Status Follow(ServerContext* context, const chirp::FollowRequest* request,
+                       chirp::FollowReply* reply) override {
 
   }
 
-  Status Read(ServerContext* context, const ReadRequest* request,
-                  ReadReply* reply) override {
+  Status Read(ServerContext* context, const chirp::ReadRequest* request,
+                  chirp::ReadReply* reply) override {
     
   }
 
-  Status Monitor(ServerContext* context, const MonitorRequest* request,
-                  MonitorReply* reply) override {
+  Status Monitor(ServerContext* context, const chirp::MonitorRequest* request,
+                  chirp::MonitorReply* reply) override {
     
   }
 };
