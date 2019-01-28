@@ -1,29 +1,26 @@
-
 #include <iostream>
 #include <memory>
 #include <string>
 
-using chirp::KeyValueStore
-// #include <grpcpp/grpcpp.h>
-
 #ifdef BAZEL_BUILD
-// #include "examples/protos/chirp.grpc.pb.h"
-#else
-// #include "chirp.grpc.pb.h"
-#endif
 
+#else
+
+#endif
 
 // Logic and data behind the server's behavior.
 class ChirpServiceImpl final : public chirp::KeyValueStore::Service {
 
-  Status Put(ServerContext* context, const PutRequest* request, PutReply* reply) override {
-    
+  Status Put(ServerContext* context, const chirp::PutRequest* request, chirp::PutReply* reply) override {
+    // TODO: call Put in the KeyValueDataStore and then place output into reply
   }
 
-  Status Get(ServerContext* context, const GetRequest* request, GetReply* reply) override {
+  Status Get(ServerContext* context, const chirp::GetRequest* request, chirp::GetReply* reply) override {
+    // TODO: call Get in the KeyValueDataStore and then place output into reply
   }
 
-  Status DeleteKey(ServerContext* context, const DelteKeyRequest* request, DeleteKeyReply* reply) override {
+  Status DeleteKey(ServerContext* context, const chirp::DelteKeyRequest* request, chirp::DeleteKeyReply* reply) override {
+    // TODO: call DeleteKey in the KeyValueDataStore and then place output into reply
   }
 };
 
