@@ -3,7 +3,10 @@
 #include <string>
 
 #ifdef BAZEL_BUILD
-
+// TODO: I'm not sure what to put here in place of the proto stuff that hello world uses
+// #include "examples/protos/helloworld.grpc.pb.h"
+// #else
+// #include "helloworld.grpc.pb.h"
 #else
 
 #endif

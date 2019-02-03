@@ -5,7 +5,7 @@
 // for both the kv_backend and the kv_client_grpc
 class KeyValueInterface {
 	public:
-		virtual KeyValueInterface();
+		KeyValueInterface();
 		virtual ~KeyValueInterface();
 		virtual std::string Get(const std::string& key);
 		virtual std::string Put(const std::string& key, const std::string& value);
