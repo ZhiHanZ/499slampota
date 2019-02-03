@@ -8,8 +8,8 @@
 
 #endif
 
-// Logic and data behind the server's behavior.
-class ChirpServiceImpl final : public chirp::KeyValueStore::Service {
+// Key Value Server part of grpc that makes calls to the true kv_backend
+class KeyValueServer final : public chirp::KeyValueStore::Service {
   public:
     Status Put(ServerContext* context, const chirp::PutRequest* request, chirp::PutReply* reply) override {
       // TODO: find out how to generate random keys
@@ -19,13 +19,11 @@ class ChirpServiceImpl final : public chirp::KeyValueStore::Service {
     }
 
     Status Get(ServerContext* context, const chirp::GetRequest* request, chirp::GetReply* reply) override {
-      // TODO: call Get in the KeyValueDataStore and then place output into reply
       *reply = kvbe.Get(request);
       return Status::OK;
     }
 
     Status DeleteKey(ServerContext* context, const chirp::DelteKeyRequest* request, chirp::DeleteKeyReply* reply) override {
-      // TODO: call DeleteKey in the KeyValueDataStore
       kvbe.DeleteKey(request);
       return Status::OK;
     }

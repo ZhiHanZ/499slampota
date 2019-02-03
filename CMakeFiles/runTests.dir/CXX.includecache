@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/vagrant/499slampota/kv_backend.cc
+string
+-
+map
+-
+
+/vagrant/499slampota/kv_backend_test.cc
+gtest/gtest.h
+/vagrant/499slampota/gtest/gtest.h
+cstddef
+-
+kv_backend.cc
+/vagrant/499slampota/kv_backend.cc
+

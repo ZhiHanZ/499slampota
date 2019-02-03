@@ -17,31 +17,30 @@ using grpc::Status;
 
 // Logic and data behind the server's behavior.
 class ChirpServiceImpl final : public chirp::ServerLayer::Service {
-  Status Register(ServerContext* context, const chirp::RegisterRequest* request,
-                  chirp::RegisterReply* reply) override {
-    // what is override???
-    // do I change Status Register return type to Register Reply return type???
-    // where do all these types - like RegisterRequest/Replay get declared???
-  }
+  public:
+    Status Register(ServerContext* context, const chirp::RegisterRequest* request,
+                    chirp::RegisterReply* reply) override {
+    }
 
-  Status Chirp(ServerContext* context, const chirp::ChirpRequest* request,
-                       chirp::ChirpReply* reply) override {
-  }
+    Status Chirp(ServerContext* context, const chirp::ChirpRequest* request,
+                         chirp::ChirpReply* reply) override {
+    }
 
-  Status Follow(ServerContext* context, const chirp::FollowRequest* request,
-                       chirp::FollowReply* reply) override {
+    Status Follow(ServerContext* context, const chirp::FollowRequest* request,
+                         chirp::FollowReply* reply) override {
 
-  }
+    }
 
-  Status Read(ServerContext* context, const chirp::ReadRequest* request,
-                  chirp::ReadReply* reply) override {
-    
-  }
+    Status Read(ServerContext* context, const chirp::ReadRequest* request,
+                    chirp::ReadReply* reply) override {
+      
+    }
 
-  Status Monitor(ServerContext* context, const chirp::MonitorRequest* request,
-                  chirp::MonitorReply* reply) override {
-    
-  }
+    Status Monitor(ServerContext* context, const chirp::MonitorRequest* request,
+                    chirp::MonitorReply* reply) override {
+      
+    }
+  private:
 };
 
 void RunServer() {
