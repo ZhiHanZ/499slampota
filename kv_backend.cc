@@ -1,33 +1,37 @@
 #include <string>
 #include <map>
-#include "key_value_interface.cc"
+#include "key_value_interface.h"
 
 // true kv_backend implementation that stores all raw data
 class KeyValueBackEnd : public KeyValueInterface{
 	public:
 		KeyValueBackEnd();
-		~KeyValueBackEnd();
-		std::string Get(const std::string& key);
-		std::string Put(const std::string& key, const std::string& chirp_value);
-		std::string DeleteKey(const std::string& key);
+		virtual ~KeyValueBackEnd();
+		std::string Get(const std::string& key) override;
+		void Put(const std::string& key, const std::string& chirp_value) override;
+		void DeleteKey(const std::string& key) override;
+		int size();
 	private:
-		// key - std::string, value - serialized chirp or user object
-		std::map<std::string, std::string> chirp_map_;	
+		// key - string, value - serialized object as a string
+		std::map<std::string, std::string> data_map_;	
 };
 
 std::string KeyValueBackEnd::Get(const std::string& key) {
-	return chirp_map_.at(key);
+	return data_map_.at(key);
 }
 
-std::string KeyValueBackEnd::Put(const std::string& key, const std::string& value) {
+void KeyValueBackEnd::Put(const std::string& key, const std::string& value) {
 	std::pair<std::string, std::string> createChirp;
 	createChirp.first = key;
 	createChirp.second = value;
-	chirp_map_.insert(createChirp);
-	return "";
+	data_map_.insert(createChirp);
 }
 
-std::string KeyValueBackEnd::DeleteKey(const std::string& key) {
-	chirp_map_.erase(key);
-	return "";
+void KeyValueBackEnd::DeleteKey(const std::string& key) {
+	data_map_.erase(key);
 }
+
+int KeyValueBackEnd::size() {
+	return data_map_.size();
+}
+
