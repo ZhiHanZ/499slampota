@@ -11,12 +11,13 @@
 
 #endif
 
-// Key Value Server part of grpc that makes calls to the true kv_backend
+// Service Layer Server part of grpc that makes calls to the true sl_backend
 class ServiceLayerServer final : public chirp::ServiceLayer::Service {
   public:
     Status RegisterUser(ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) override {
-      // TODO: find out how to generate random keys
-      // and figure out what goes in here???
+      // TODO: figure out what goes in here???
+      // i think i have to pull out the individual data members in the request 
+      // and then use those as the parameter when I call the slbe's methods
       return Status::OK;
     }
 
@@ -27,8 +28,6 @@ class ServiceLayerServer final : public chirp::ServiceLayer::Service {
 
     Status Follow(ServerContext* context, const chirp:FollowRequest* request, chirp::FollowReply* reply) override {
       // TODO: figure out what goes in here???
-      // i think i have to pull out the individual data members in the request 
-      // and then use those as the parameter when I call the slbe's methods
       return Status::OK;
     }
     Status Read(ServerContext* context, const chirp:ReadRequest* request, chirp::ReadReply* reply) override {

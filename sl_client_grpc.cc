@@ -11,7 +11,7 @@
 // #include "helloworld.grpc.pb.h"
 #endif
 
-// Key Value Client Class that calls kv_server_grpc functions
+// Service Layer Client Class that calls sl_server_grpc functions
 class ServiceLayerClient : public ServiceLayerInterface {
  public:
   ServiceLayerClient(std::shared_ptr<grpc::Channel> channel)

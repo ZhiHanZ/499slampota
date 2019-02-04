@@ -1,8 +1,8 @@
 #include <string>
 #include <map>
 
-// Key Value Interface class that is the parent class 
-// for both the kv_backend and the kv_client_grpc
+// Service Layer Interface class that is the parent class 
+// for both the sl_backend and the sl_client_grpc
 class ServiceLayerInterface {
 	public:
 		ServiceLayerInterface();

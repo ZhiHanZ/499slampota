@@ -2,7 +2,7 @@
 #include <map>
 #include "service_layer_interface.cc"
 
-// true kv_backend implementation that stores all raw data
+// true sl_backend implementation - still a little confused about its role???
 class ServiceLayerBackEnd : public ServiceLayerInterface{
 	public:
 		ServiceLayerBackEnd();
