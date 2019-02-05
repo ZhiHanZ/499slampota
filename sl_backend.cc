@@ -1,15 +1,15 @@
 #include <string>
 #include <map>
-#include "service_layer_interface.cc"
+#include "service_layer_interface.h"
 
 // true sl_backend implementation - still a little confused about its role???
 class ServiceLayerBackEnd : public ServiceLayerInterface{
 	public:
 		ServiceLayerBackEnd();
 		~ServiceLayerBackEnd();
-		std::string RegisterUser(const std::string& username);
-		std::string Chirp(const std::string& username, const std::string& text, const int& parent_id);
-		std::string Follow(const std::string& username, const std::string& to_follow);
+		void RegisterUser(const std::string& username);
+		void Chirp(const std::string& username, const std::string& text, const int& parent_id);
+		void Follow(const std::string& username, const std::string& to_follow);
 		std::string Read(const int& chirp_id);
 		std::string Monitor(const std::string& username);
 	private:
@@ -17,19 +17,24 @@ class ServiceLayerBackEnd : public ServiceLayerInterface{
 		//is it a pointer to the kvbe so that we can alter it from here??
 };
 
-std::string RegisterUser(const std::string& username) {
+ServiceLayerBackEnd::ServiceLayerBackEnd() {
 
-	return "";
 }
 
-std::string Chirp(const std::string& username, const std::string& text, const int& parent_id) {
+ServiceLayerBackEnd::~ServiceLayerBackEnd() {
 
-	return "";
 }
 
-std::string Follow(const std::string& username, const std::string& to_follow) {
+void RegisterUser(const std::string& username) {
 
-	return "";
+}
+
+void Chirp(const std::string& username, const std::string& text, const int& parent_id) {
+
+}
+
+void Follow(const std::string& username, const std::string& to_follow) {
+
 } 
 
 std::string Read(const int& chirp_id) {
