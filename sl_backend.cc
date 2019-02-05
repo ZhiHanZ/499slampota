@@ -7,7 +7,7 @@ class ServiceLayerBackEnd : public ServiceLayerInterface{
 	public:
 		ServiceLayerBackEnd();
 		~ServiceLayerBackEnd();
-		void RegisterUser(const std::string& username);
+		std::string RegisterUser(const std::string& username);
 		void Chirp(const std::string& username, const std::string& text, const int& parent_id);
 		void Follow(const std::string& username, const std::string& to_follow);
 		std::string Read(const int& chirp_id);
@@ -25,7 +25,7 @@ ServiceLayerBackEnd::~ServiceLayerBackEnd() {
 
 }
 
-void RegisterUser(const std::string& username) {
+std::string RegisterUser(const std::string& username) {
 
 }
 

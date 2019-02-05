@@ -47,7 +47,7 @@ class ServiceLayerClient : public ServiceLayerInterface {
   std::string Chirp(const std::string& username, const std::string& text, const int& parent_id) {
     chirp::ChirpRequest request;
     request.set_username(username);
-    request.set_username(text);
+    request.set_text(text);
     request.set_parent_id(parent_id);
 
     chirp::ChirpReply reply;

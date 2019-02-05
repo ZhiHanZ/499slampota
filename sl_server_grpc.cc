@@ -17,25 +17,38 @@ class ServiceLayerServer final : public chirp::ServiceLayer::Service {
     Status RegisterUser(ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) override {
       // TODO: figure out what goes in here???
       // i think i have to pull out the individual data members in the request 
+      std::string username = request.get_username(); 
       // and then use those as the parameter when I call the slbe's methods
+      *reply = slbe.Register(username);
       return Status::OK;
     }
 
     Status Chirp(ServerContext* context, const chirp::ChirpRequest* request, chirp::ChirpReply* reply) override {
       // TODO: figure out what goes in here???
+      std::string username = request.username();
+      std::string text = request.text();
+      std::string parent_id = request.parent_id();
+      slbe.Chirp(username, text, parent_id);
       return Status::OK;
     }
 
     Status Follow(ServerContext* context, const chirp:FollowRequest* request, chirp::FollowReply* reply) override {
       // TODO: figure out what goes in here???
+      std::string username = request.username();
+      std::string to_follow = request.to_follow();
+      slbe.Follow(username, to_follow);
       return Status::OK;
     }
     Status Read(ServerContext* context, const chirp:ReadRequest* request, chirp::ReadReply* reply) override {
       // TODO: figure out what goes in here???
+      std::string chirp_id = request.chirp_id();
+      *reply = slbe.Read(chirp_id);
       return Status::OK;
     }
     Status Monitor(ServerContext* context, const chirp:MonitorRequest* request, chirp::MonitorReply* reply) override {
       // TODO: figure out what goes in here???
+      std::string username = request.username();
+      *reply = slbe.Monitor(username);
       return Status::OK;
     }
   private:
