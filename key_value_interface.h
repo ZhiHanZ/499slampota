@@ -8,7 +8,7 @@ class KeyValueInterface {
 		// constructor
 		KeyValueInterface();
 		// destructor
-		virtual ~KeyValueInterface() = 0;
+		virtual ~KeyValueInterface();
 		// returns string value stored with 'key' in map
 		virtual std::string Get(const std::string& key) = 0;
 		// places a key value pair in the map
@@ -19,3 +19,11 @@ class KeyValueInterface {
 		// data map that holds all raw string data
 		std::map<std::string, std::string> data_map_;
 };
+
+KeyValueInterface::KeyValueInterface() {
+
+}
+
+KeyValueInterface::~KeyValueInterface() {
+
+}

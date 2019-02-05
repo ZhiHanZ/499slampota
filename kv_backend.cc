@@ -16,6 +16,14 @@ class KeyValueBackEnd : public KeyValueInterface{
 		std::map<std::string, std::string> data_map_;	
 };
 
+KeyValueBackEnd::KeyValueBackEnd() {
+	
+}
+
+KeyValueBackEnd::~KeyValueBackEnd() {
+
+}
+
 std::string KeyValueBackEnd::Get(const std::string& key) {
 	return data_map_.at(key);
 }
