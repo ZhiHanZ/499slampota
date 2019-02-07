@@ -44,7 +44,7 @@ class ServiceLayerClient : public ServiceLayerInterface {
     }
   }
 
-  std::string Chirp(const std::string& username, const std::string& text, const int& parent_id) {
+  std::string Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
     chirp::ChirpRequest request;
     request.set_username(username);
     request.set_text(text);
@@ -85,7 +85,7 @@ class ServiceLayerClient : public ServiceLayerInterface {
     }
   }
 
-  std::string Read(const int& chirp_id) {
+  std::string Read(const std::string& chirp_id) {
     chirp::ReadRequest request;
     request.set_chirp_id(chirp_id);
 
