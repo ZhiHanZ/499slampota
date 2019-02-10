@@ -25,7 +25,7 @@ class ServiceLayerInterface {
 		// instance of the key value client (grpc) on which to call Put, Get, and Delete
 		KeyValueClient kv_client_;
 		// a counter that ensures that all of the chirps will have a unique key
-		key_counter_;
+		int key_counter_;
 }; 
 
 ServiceLayerInterface::ServiceLayerInterface() {

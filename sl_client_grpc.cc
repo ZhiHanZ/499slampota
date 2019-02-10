@@ -19,7 +19,8 @@ class ServiceLayerClient : public ServiceLayerInterface {
 
   // Assembles the client's payload, sends it and presents the response back
   // from the server.
-  std::string RegisterUser(const std::string& username) {
+  //--->
+    std::string RegisterUser(const std::string& username) {
     // Data we are sending to the server.
     chirp::RegisterRequest request;
     request.set_username(username);

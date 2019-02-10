@@ -3,7 +3,7 @@
 #include "key_value_interface.h"
 
 // true kv_backend implementation that stores all raw data
-class KeyValueBackEnd : public KeyValueInterface{
+class KeyValueBackEnd : public KeyValueInterface {
 	public:
 		KeyValueBackEnd();
 		virtual ~KeyValueBackEnd();

@@ -3,12 +3,12 @@
 #include <string>
 
 #include <grpcpp/grpcpp.h>
-
+#include "key_value_interface.h"
 #ifdef BAZEL_BUILD
 // TODO: I'm not sure what to put here in place of the proto stuff that hello world uses
-// #include "examples/protos/helloworld.grpc.pb.h"
-// #else
-// #include "helloworld.grpc.pb.h"
+#include "protos/chirpkv.grpc.pb.h"
+#else
+#include "chirpkv.grpc.pb.h"
 #endif
 
 // Key Value Client Class that calls kv_server_grpc functions
@@ -19,7 +19,7 @@ class KeyValueClient : public KeyValueInterface {
 
   // Assembles the client's payload, sends it and presents the response back
   // from the server.
-  std::string Put(const std::string& key, const std::string& value) {
+  void Put(const std::string& key, const std::string& value) {
     // Data we are sending to the server.
     chirp::PutRequest request;
     request.set_key(key);
@@ -33,16 +33,8 @@ class KeyValueClient : public KeyValueInterface {
     grpc::ClientContext context;
 
     // The actual RPC.
-    grpc::Status status = stub_->Put(&context, request, &reply);
-
-    // Act upon its status.
-    if (status.ok()) {
-      return reply.message();
-    } else {
-      std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-      return "RPC failed";
-    }
+    grpc::Status status = stub_->put(&context, request, &reply);
+    
   }
 
   std::string Get(const std::string& key) {
@@ -53,18 +45,11 @@ class KeyValueClient : public KeyValueInterface {
 
     grpc::ClientContext context;
 
-    grpc::Status status = stub_->Get(&context, request, &reply);
+    std::unique_ptr<grpc::ClientReaderWriter<chirp::GetRequest, chirp::GetReply> > stream = stub_->get(&context);
 
-    if (status.ok()) {
-      return reply.message();
-    } else {
-      std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-      return "RPC failed";
-    }
   }
 
-  std::string Delete(const std::string& key) {
+  void DeleteKey(const std::string& key) {
     chirp::DeleteRequest request;
     request.set_key(key);
 
@@ -72,15 +57,7 @@ class KeyValueClient : public KeyValueInterface {
 
     grpc::ClientContext context;
 
-    grpc::Status status = stub_->DeleteKey(&context, request, &reply);
-
-    if (status.ok()) {
-      return reply.message();
-    } else {
-      std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-      return "RPC failed";
-    }
+    grpc::Status status = stub_->deletekey(&context, request, &reply);
   }
 
  private:
@@ -90,12 +67,13 @@ class KeyValueClient : public KeyValueInterface {
 int main(int argc, char** argv) {
   // Instantiate the client. It requires a channel, out of which the actual RPCs
   // are created. This channel models a connection to an endpoint (in this case,
-  // localhost at port 50051). We indicate that the channel isn't authenticated
+  // localhost at port 50000). We indicate that the channel isn't authenticated
   // (use of InsecureChannelCredentials()).
   KeyValueClient kv_client(grpc::CreateChannel(
       "localhost:50000", grpc::InsecureChannelCredentials()));
-  std::string reply = kv_client.Put("test key", "test value");
-  std::cout << "Received: " << reply << std::endl;
+  //std::string reply = 
+  kv_client.Put("test key", "test value");
+  //std::cout << "Received: " << reply << std::endl;
 
   return 0;
 }
