@@ -1,0 +1,59 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /vagrant/499slampota/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_601bc/fast"
+make: Warning: File 'Makefile' has modification time 385 s in the future
+/usr/bin/make -f CMakeFiles/cmTC_601bc.dir/build.make CMakeFiles/cmTC_601bc.dir/build
+make[1]: Entering directory '/vagrant/499slampota/CMakeFiles/CMakeTmp'
+make[1]: Warning: File 'CMakeFiles/cmTC_601bc.dir/flags.make' has modification time 385 s in the future
+Building C object CMakeFiles/cmTC_601bc.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_601bc.dir/CheckSymbolExists.c.o   -c /vagrant/499slampota/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_601bc
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_601bc.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_601bc.dir/CheckSymbolExists.c.o  -o cmTC_601bc 
+CMakeFiles/cmTC_601bc.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x1b): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_601bc.dir/build.make:97: recipe for target 'cmTC_601bc' failed
+make[1]: *** [cmTC_601bc] Error 1
+make[1]: Leaving directory '/vagrant/499slampota/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_601bc/fast' failed
+make: *** [cmTC_601bc/fast] Error 2
+
+File /vagrant/499slampota/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /vagrant/499slampota/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_1461e/fast"
+make: Warning: File 'Makefile' has modification time 385 s in the future
+/usr/bin/make -f CMakeFiles/cmTC_1461e.dir/build.make CMakeFiles/cmTC_1461e.dir/build
+make[1]: Entering directory '/vagrant/499slampota/CMakeFiles/CMakeTmp'
+make[1]: Warning: File 'CMakeFiles/cmTC_1461e.dir/flags.make' has modification time 385 s in the future
+Building C object CMakeFiles/cmTC_1461e.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_1461e.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_1461e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1461e.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_1461e.dir/CheckFunctionExists.c.o  -o cmTC_1461e -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_1461e.dir/build.make:97: recipe for target 'cmTC_1461e' failed
+make[1]: *** [cmTC_1461e] Error 1
+make[1]: Leaving directory '/vagrant/499slampota/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_1461e/fast' failed
+make: *** [cmTC_1461e/fast] Error 2
+
+

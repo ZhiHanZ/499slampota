@@ -1,5 +1,9 @@
+#ifndef CPP_KEY_VALUE_INTERFACE_H_
+#define CPP_KEY_VALUE_INTERFACE_H_
+
 #include <string>
 #include <map>
+#include <vector>
 
 // Key Value Interface class that is the parent class 
 // for both the kv_backend and the kv_client_grpc
@@ -10,7 +14,7 @@ class KeyValueInterface {
 		// destructor
 		virtual ~KeyValueInterface();
 		// returns string value stored with 'key' in map
-		virtual std::string Get(const std::string& key) = 0;
+		virtual std::vector<std::string> Get(const std::string& key) = 0;
 		// places a key value pair in the map
 		virtual void Put(const std::string& key, const std::string& value) = 0;
 		// deletes a key and therefore value from the map
@@ -20,10 +24,4 @@ class KeyValueInterface {
 		std::map<std::string, std::string> data_map_;
 };
 
-KeyValueInterface::KeyValueInterface() {
-
-}
-
-KeyValueInterface::~KeyValueInterface() {
-
-}
+#endif /*CPP_KEY_VALUE_INTERFACE_H_*/

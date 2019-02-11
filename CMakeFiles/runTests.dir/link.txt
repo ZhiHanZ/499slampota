@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/runTests.dir/kv_backend_test.cc.o  -o runTests -Wl,-Bstatic -lgtest -Wl,-Bdynamic -lpthread 

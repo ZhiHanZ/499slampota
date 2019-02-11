@@ -1,56 +1,31 @@
-#include <iostream>
-#include <memory>
-#include <string>
-#include <deque>
-#include <grpcpp/grpcpp.h>
+#include "kv_server_grpc.h"
 
-#ifdef BAZEL_BUILD
-// #include "kv_backend.cc"
-// #include "kv_backend.cc"
-#include "protos/chirpkv.grpc.pb.h"
-#else
-#include "chirpkv.grpc.pb.h"
-#include "kv_backend.cc"
-#endif
+grpc::Status KeyValueServer::put(grpc::ServerContext* context, const chirp::PutRequest* request, chirp::PutReply* reply) {
+  // TODO: find out how to generate random keys
+  std::string key = request->key();
+  std::string value = request->value();
+  kvbe_.Put(key, value);
+  return grpc::Status::OK;
+}
 
-// Key Value Server part of grpc that makes calls to the true kv_backend
-class KeyValueServer final : public chirp::KeyValueStore::Service {
-  public:
-    grpc::Status put(grpc::ServerContext* context, const chirp::PutRequest* request, chirp::PutReply* reply) {
-      // TODO: find out how to generate random keys
-      std::string key = request->key();
-      std::string value = request->value();
-      kvbe_.Put(key, value);
-      return grpc::Status::OK;
-    }
+grpc::Status KeyValueServer::get(grpc::ServerContext* context, grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* stream) {
+  chirp::GetRequest request;
+  stream->Read(&request);
+  const std::vector<std::string>& values = kvbe_.Get(request.key());
 
-    grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* get(grpc::ServerContext* context) {
-    //grpc::Status get(grpc::ServerContext* context, grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* stream) {
-      //grpc::Status get(ServerContext* context) override {
-      grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* stream;
-      chirp::GetRequest request;
-      stream->Read(&request);
-      //std::deque<std::string>& values;
-      std::string s = kvbe_.Get(request.key());
-      //values.push_back(s);
+  chirp::GetReply reply;
+  for(const std::string& val : values) {
+    reply.set_value(val);
+    const chirp::GetReply& sendingReply = reply;
+    stream->Write(sendingReply);
+  }
+  return grpc::Status::OK;
+}
 
-      chirp::GetReply reply;
-      // for(const std::string& val : values) {
-      //   reply.set_value(val);
-      //   const chirp::GetReply& sendingReply = reply;
-      //   stream->Write(sendingReply);
-      // }
-      reply.set_value(kvbe_.Get(request.key()));
-      return stream;
-    }
-
-    grpc::Status deletekey(grpc::ServerContext* context, const chirp::DeleteRequest* request, chirp::DeleteReply* reply) {
-      kvbe_.DeleteKey(request->key());
-      return grpc::Status::OK;
-    }
-  private:
-    KeyValueBackEnd kvbe_;
-};
+grpc::Status KeyValueServer::deletekey(grpc::ServerContext* context, const chirp::DeleteRequest* request, chirp::DeleteReply* reply) {
+  kvbe_.DeleteKey(request->key());
+  return grpc::Status::OK;
+}
 
 void RunServer() {
   std::string server_address("0.0.0.0:50000");

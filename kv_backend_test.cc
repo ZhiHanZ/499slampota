@@ -13,9 +13,9 @@ TEST(KV_backend, PutGetDelete) {
 	EXPECT_EQ(2, kvbe.size());
 	kvbe.Put(c, c);
 	EXPECT_EQ(3, kvbe.size());
-	EXPECT_EQ("a", kvbe.Get("a"));
-	EXPECT_EQ("b", kvbe.Get("b"));
-	EXPECT_EQ("c", kvbe.Get("c"));
+	EXPECT_EQ("a", kvbe.Get("a")[0]);
+	EXPECT_EQ("b", kvbe.Get("b")[0]);
+	EXPECT_EQ("c", kvbe.Get("c")[0]);
 	kvbe.DeleteKey("a");
 	EXPECT_EQ(2, kvbe.size());
 	kvbe.DeleteKey("b");

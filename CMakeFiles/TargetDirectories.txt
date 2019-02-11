@@ -1,0 +1,3 @@
+/vagrant/499slampota/CMakeFiles/rebuild_cache.dir
+/vagrant/499slampota/CMakeFiles/runTests.dir
+/vagrant/499slampota/CMakeFiles/edit_cache.dir
