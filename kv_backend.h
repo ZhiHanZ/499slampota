@@ -3,22 +3,21 @@
 
 #include <string>
 #include <map>
-#include "key_value_interface.h"
 #include <vector>
 
 // true kv_backend implementation that stores all raw data
-class KeyValueBackEnd : public KeyValueInterface {
+class KeyValueBackEnd {
 	public:
 		// constructor
 		KeyValueBackEnd();
 		// destructor
 		virtual ~KeyValueBackEnd();
 		// get function that is used to retrieve values from the data_map_
-		std::vector<std::string> Get(const std::string& key) override;
+		std::vector<std::string> Get(const std::string& key);
 		// get function that is used to insert values from the data_map_
-		void Put(const std::string& key, const std::string& chirp_value) override;
+		void Put(const std::string& key, const std::string& chirp_value);
 		// delete function that is used to remove values from the data_map_
-		void DeleteKey(const std::string& key) override;
+		void DeleteKey(const std::string& key);
 		// size function for testing purposes
 		int size();
 	private:

@@ -1,4 +1,5 @@
 #include "sl_server_grpc.h"
+#include <iostream>
 
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
   std::string username = request->username();
@@ -11,6 +12,8 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string text = request->text();
   std::string parent_id = request->parent_id();
   slbe_.Chirp(username, text, parent_id);
+  std::cout << "this chirp w user: " << username << " text: " << text << std::endl;
+  std::cout << "the count is: " << key_counter_ << std::endl;
   key_counter_++;
   return grpc::Status::OK;
 }
@@ -29,6 +32,7 @@ grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp:
     createdChirp->set_text(val.text());
     createdChirp->set_id(val.id());
     createdChirp->set_parent_id(val.parent_id());
+    std::cout << "at this pt im getting: " << val.username() << " " << val.text() << std::endl;
     // TODO: make it a real timestamp
     // createdChirp->set_timestamp(val.timestamp());
   }

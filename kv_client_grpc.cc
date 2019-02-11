@@ -30,7 +30,7 @@ std::vector<std::string> KeyValueClient::Get(const std::string& key) {
   chirp::GetReply reply;
 
   grpc::ClientContext context;
-  grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* stream;
+  //grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* stream;
 
   std::unique_ptr<grpc::ClientReaderWriter<chirp::GetRequest, chirp::GetReply> > stream_handle (stub_->get(&context));
   stream_handle->Write(request);

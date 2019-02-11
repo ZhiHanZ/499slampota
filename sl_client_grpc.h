@@ -7,12 +7,11 @@
 #include <vector>
 
 #include <grpcpp/grpcpp.h>
-
+#include "sl_server_grpc.h"
 #include "chirpsl.grpc.pb.h"
-#include "service_layer_interface.h"
 
 // Service Layer Client Class that calls sl_server_grpc functions
-class ServiceLayerClient : public ServiceLayerInterface {
+class ServiceLayerClient {
 	 public:
 		  // constructor that takes in a channel
 		  ServiceLayerClient(std::shared_ptr<grpc::Channel> channel)

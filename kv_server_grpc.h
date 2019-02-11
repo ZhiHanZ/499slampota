@@ -7,7 +7,7 @@
 #include <grpcpp/grpcpp.h>
 
 #include "chirpkv.grpc.pb.h"
-#include "kv_backend.cc"
+#include "kv_backend.h"
 
 // Key Value Server part of grpc that makes calls to the true kv_backendclass KeyValueServer final : public chirp::KeyValueStore::Service {
 class KeyValueServer final : public chirp::KeyValueStore::Service {

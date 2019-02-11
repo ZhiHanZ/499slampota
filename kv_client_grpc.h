@@ -7,12 +7,12 @@
 #include <vector>
 
 #include <grpcpp/grpcpp.h>
-#include "key_value_interface.h"
+#include "kv_server_grpc.h"
 
 #include "chirpkv.grpc.pb.h"
 
 // Key Value Client Class that calls kv_server_grpc functions
-class KeyValueClient : public KeyValueInterface {
+class KeyValueClient {
  public:
   // constructor
   KeyValueClient();

@@ -7,7 +7,7 @@
 #include <grpcpp/grpcpp.h>
 
 #include "chirpsl.grpc.pb.h"
-#include "sl_backend.cc"
+#include "sl_backend.h"
 
 // Service Layer Server part of grpc that makes calls to the true sl_backend
 class ServiceLayerServer final : public chirp::ServiceLayer::Service {

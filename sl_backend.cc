@@ -11,7 +11,7 @@ std::string ServiceLayerBackEnd::RegisterUser(const std::string& username) {
 		return "That username is unavailable";
 	}
 	// check if the username is already taken
-	if(kv_client_.Get(username).size() != 0) {
+	if(!((kv_client_.Get(username)).empty())) {
 		return "That username already exists";
 	}
 	else {
