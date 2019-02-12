@@ -1,4 +1,6 @@
 #include "sl_backend.h"
+#include <iostream>
+
 
 ServiceLayerBackEnd::ServiceLayerBackEnd() {}
 
@@ -26,6 +28,13 @@ void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& 
   ch.set_username(username);
   ch.set_text(text);
   std::string chirp_id = "chirp_by: " + username + " " + std::to_string(key_counter_);
+  if(parent_id == "")
+  {
+  	std::cout << "inserting chirp with id: " << chirp_id << "and no parent id: " << std::endl;
+  }
+  else {
+  	std::cout << "inserting chirp with id: " << chirp_id << "and parent id: " << parent_id << std::endl;
+  }
   ch.set_id(chirp_id);
   ch.set_parent_id(parent_id);
   chirp::Timestamp time;
@@ -34,8 +43,19 @@ void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& 
   std::string serialized_chirp;
   ch.SerializeToString(&serialized_chirp);
 	kv_client_.Put(chirp_id, serialized_chirp);
-	kv_client_.Put(parent_id, serialized_chirp);
+	// kv_client_.Put(parent_id, serialized_chirp);
+	// TODO: get the parent id chirp and see if it has a parent id and if so - put the serialized chirp in their parent to - and so on and so on
+	std::string pid = ch.parent_id();
+	while(pid != "") 
+	{
+		std::cout << "ths should print once for pid jill and again for pid steph" << std::endl;
+		kv_client_.Put(pid, serialized_chirp);
+		chirp::Chirp hold;
+		hold.ParseFromString(kv_client_.Get(pid)[0]);
+		pid = hold.parent_id();
+	}
 	kv_client_.Put("newest", serialized_chirp);
+	key_counter_++;
 }
 
 void ServiceLayerBackEnd::Follow(const std::string& username, const std::string& to_follow) {

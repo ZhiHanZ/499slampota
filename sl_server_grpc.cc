@@ -13,8 +13,6 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string parent_id = request->parent_id();
   slbe_.Chirp(username, text, parent_id);
   std::cout << "this chirp w user: " << username << " text: " << text << std::endl;
-  std::cout << "the count is: " << key_counter_ << std::endl;
-  key_counter_++;
   return grpc::Status::OK;
 }
 

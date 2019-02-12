@@ -25,8 +25,6 @@ class ServiceLayerServer final : public chirp::ServiceLayer::Service {
   private:
   	// private instance of service layer's backend so that we can call it's functions
     ServiceLayerBackEnd slbe_;
-    // a counter to tack onto the end of our data_map_ keys to ensure they are unique
-    int key_counter_ = 0;
 };
 
 #endif /*CPP_SL_SERVER_GRPC_H_*/

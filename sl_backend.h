@@ -32,9 +32,9 @@ class ServiceLayerBackEnd {
 		std::string Monitor(const std::string& username);
 	private:
 		// instance of the key value client (grpc) on which to call Put, Get, and Delete
-		KeyValueClient kv_client_;
-		// instance of key counter to ensure that the keys are all unique when they go into the map
-		int key_counter_;
+		KeyValueClient kv_client_; 
+		// a counter to tack onto the end of our data_map_ keys to ensure they are unique
+    int key_counter_ = 0;
 };
 
 #endif /*CPP_SL_BACKEND_H_*/
