@@ -1,60 +1,52 @@
+#include "sl_server_grpc.h"
 #include <iostream>
-#include <memory>
-#include <string>
 
-#ifdef BAZEL_BUILD
-#include "sl_backend.cc"
-#include "protos/chirpsl.grpc.pb.h"
-#else
-#include "chirpsl.grpc.pb.h"
-#include <grpcpp/grpcpp.h>
+grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
+  std::string username = request->username();
+  slbe_.RegisterUser(username);
+  return grpc::Status::OK;
+}
 
-#endif
+grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp::ChirpRequest* request, chirp::ChirpReply* reply) {
+  std::string username = request->username();
+  std::string text = request->text();
+  std::string parent_id = request->parent_id();
+  slbe_.Chirp(username, text, parent_id);
+  std::cout << "this chirp w user: " << username << " text: " << text << std::endl;
+  std::cout << "the count is: " << key_counter_ << std::endl;
+  key_counter_++;
+  return grpc::Status::OK;
+}
 
-// Service Layer Server part of grpc that makes calls to the true sl_backend
-class ServiceLayerServer final : public chirp::ServiceLayer::Service {
-  public:
-    grpc::Status RegisterUser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) override {
-      std::string username = request.get_username();
-      *reply = slbe.Register(username);
-      return grpc::Status::OK;
-    }
-
-    grpc::Status Chirp(grpc::ServerContext* context, const chirp::ChirpRequest* request, chirp::ChirpReply* reply) override {
-      std::string username = request.username();
-      std::string text = request.text();
-      std::string parent_id = request.parent_id();
-      slbe.Chirp(chirp_id, serialized_chirp);
-      key_counter_++;
-      return grpc::Status::OK;
-    }
-
-    grpc::Status Follow(grpc::ServerContext* context, const chirp::FollowRequest* request, chirp::FollowReply* reply) override {
-      // TODO: figure out what goes in here???
-      std::string username = request.username();
-      std::string to_follow = request.to_follow();
-      slbe.Follow(username, to_follow);
-      return Status::OK;
-    }
-    grpc::Status Read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply) override {
-      // TODO: figure out what goes in here???
-      std::string chirp_id = request.chirp_id();
-      *reply = slbe.Read(chirp_id);
-      return grpc::Status::OK;
-    }
-    grpc::Status Monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, chirp::MonitorReply* reply) override {
-      // TODO: figure out what goes in here???
-      std::string username = request.username();
-      *reply = slbe.Monitor(username);
-      return grpc::Status::OK;
-    }
-  private:
-    ServiceLayerBackEnd slbe;
-    int key_counter_ = 0;
-};
+grpc::Status ServiceLayerServer::follow(grpc::ServerContext* context, const chirp::FollowRequest* request, chirp::FollowReply* reply) {
+  std::string username = request->username();
+  std::string to_follow = request->to_follow();
+  slbe_.Follow(username, to_follow);
+  return grpc::Status::OK;
+}
+grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply) {
+  std::vector<chirp::Chirp> values = slbe_.Read(request->chirp_id());
+  for(chirp::Chirp val : values) {
+    chirp::Chirp* createdChirp = reply->add_chirps();
+    createdChirp->set_username(val.username());
+    createdChirp->set_text(val.text());
+    createdChirp->set_id(val.id());
+    createdChirp->set_parent_id(val.parent_id());
+    std::cout << "at this pt im getting: " << val.username() << " " << val.text() << std::endl;
+    // TODO: make it a real timestamp
+    // createdChirp->set_timestamp(val.timestamp());
+  }
+  return grpc::Status::OK;
+}
+grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, chirp::MonitorReply* reply) {
+  // TODO: figure out what goes in here???
+  std::string username = request->username();
+  //*reply = slbe_.Monitor(username);
+  return grpc::Status::OK;
+}
 
 void RunServer() {
-  std::string server_address("0.0.0.0:50002");
+  std::string server_address("localhost:50002");
   ServiceLayerServer service_layer;
 
   grpc::ServerBuilder builder;
