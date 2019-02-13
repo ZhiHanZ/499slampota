@@ -47,7 +47,7 @@ void KeyValueBackEnd::Put(const std::string& key, const std::string& value) {
 	else{
 		std::pair<std::string, std::vector<std::string> > createChirp;
 		std::vector<std::string> v;
-		// check if the calue is empty (a user is being registered)
+		// check if the value is empty (a user is being registered)
 		if(value != "")
 		{
 			v.push_back(value);

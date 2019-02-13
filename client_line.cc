@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 		slc.RegisterUser("jill");
 		slc.RegisterUser("aliya");
 		slc.RegisterUser("krishna");
-		slc.Chirp("stephanie", "my first chirp", ""); // chirp_by: stephanie 0
+		slc.Chirp("stephanie", "my first chirp", "chirp_by: stephanie 0"); // chirp_by: stephanie 0
 		// slc.Follow("stephanie", "jill");
 		// slc.Follow("stephanie", "aliya");
 		// slc.Follow("stephanie", "krishna");
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 		{
 			std::cout << v[i].username() << ": " << std::endl;
 	    std::cout << "\"" << v[i].text() << "\"" << std::endl;
-	    std::cout << " with a chirp id of: [" << v[i].id() << "]" << std::endl;
+	    std::cout << "with a chirp id of: [" << v[i].id() << "]" << std::endl;
 	    std::cout << std::endl;
 		}
 		std::cout << "--------- reading jill 2 --------" << std::endl;
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 		{
 			std::cout << v[i].username() << ": " << std::endl;
 	    std::cout << "\"" << v[i].text() << "\"" << std::endl;
-	    std::cout << " with a chirp id of: [" << v[i].id() << "]" << std::endl;
+	    std::cout << "with a chirp id of: [" << v[i].id() << "]" << std::endl;
 	    std::cout << std::endl;
 		}
 		std::cout << "--------- reading steph 1 --------" << std::endl;
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
 		{
 			std::cout << v[i].username() << ": " << std::endl;
 	    std::cout << "\"" << v[i].text() << "\"" << std::endl;
-	    std::cout << " with a chirp id of: [" << v[i].id() << "]" << std::endl;
+	    std::cout << "with a chirp id of: [" << v[i].id() << "]" << std::endl;
 	    std::cout << std::endl;
 		}
 		// test monitor by making the monitor for stephanie

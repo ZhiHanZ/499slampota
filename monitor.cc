@@ -118,11 +118,13 @@ int main(int argc, char **argv)
 	// =-----------=
 	ServiceLayerClient slc;
 	slc.RegisterUser("stephanie");
-	slc.Follow("stephanie", "jill");
-	slc.Follow("stephanie", "aliya");
-	slc.Follow("stephanie", "krishna");
+	slc.RegisterUser("tester");
+	slc.Follow("tester", "jill");
+	slc.Follow("tester", "aliya");
+	slc.Follow("tester", "krishna");
+	slc.Follow("tester", "stephanie");
 	slc.Chirp("stephanie", "first tweet", "");
-	slc.Monitor("stephanie");
+	slc.Monitor("tester");
 	
 	return 0;
 }

@@ -15,7 +15,7 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string text = request->text();
   std::string parent_id = request->parent_id();
   slbe_.Chirp(username, text, parent_id);
-  std::cout << "Chirping: " << username << "\'s text: " << text << std::endl;
+  std::cout << "Chirping: " << username << "\'s text: " << text << "parent: " << parent_id << std::endl;
   return grpc::Status::OK;
 }
 

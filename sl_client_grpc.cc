@@ -30,6 +30,7 @@ void ServiceLayerClient::Chirp(const std::string& username, const std::string& t
   grpc::ClientContext context;
   // call ServiceLayerServer's chirp function
   grpc::Status status = stub_->chirp(&context, request, &reply);
+  std::cout << "got back here" << std::endl;
 }
 
 void ServiceLayerClient::Follow(const std::string& username, const std::string& to_follow) {

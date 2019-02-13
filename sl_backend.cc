@@ -31,6 +31,8 @@ void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& 
   // retrieve the keyCounter from the KeyValueStore to create a unique chirp id
   std::string keyCounter = kv_client_.Get("keyCounterForDataMap")[0];
   std::string chirp_id = "chirp_by: " + username + " " + keyCounter;
+  ch.set_id(chirp_id);
+  ch.set_parent_id(parent_id);
   // increment the keyCounter and restore it
   int iKeyCounter = std::stoi(keyCounter);
   iKeyCounter++;
@@ -52,7 +54,7 @@ void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& 
 	std::string pid = ch.parent_id();
 	while(pid != "") 
 	{
-		std::cout << "has a parent" << std::endl;
+		std::cout << "THIS SHOULD BE PRINTING!!!" << std::endl;
 		kv_client_.Put(pid, serialized_chirp);
 		chirp::Chirp hold;
 		hold.ParseFromString(kv_client_.Get(pid)[0]);
@@ -83,6 +85,10 @@ std::vector<chirp::Chirp> ServiceLayerBackEnd::Read(const std::string& chirp_id)
 chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
 	// keep track of whatever is currently in the "newest" key
 	// so that whenever the chirp id in "newest" changes we send it to the monitoring user
+	if(kv_client_.Get("newest").empty())
+		{
+			std::cout <<"Og NO EMPTY" << std::endl;
+		}
 	std::string current_chirp = kv_client_.Get("newest")[0];
 	chirp::Chirp cc;
 	cc.ParseFromString(current_chirp);
@@ -92,8 +98,14 @@ chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
 	chirp::Chirp ch;
 	while(true)
 	{
+		std::cout << "enter monitor" << std::endl;
+		if(kv_client_.Get("newest").empty())
+		{
+			std::cout <<"OH NO EMPTY" << std::endl;
+		}
 		newest_chirp = kv_client_.Get("newest")[0];
 		ch.ParseFromString(newest_chirp);
+		std::cout 
 		// check if the chirp is new
 		if(ch.id() != old_chirp_id)
 		{
