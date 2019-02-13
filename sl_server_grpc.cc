@@ -3,29 +3,31 @@
 #include <iostream>
 
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
+  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   slbe_.RegisterUser(username);
   return grpc::Status::OK;
 }
 
 grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp::ChirpRequest* request, chirp::ChirpReply* reply) {
+  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   std::string text = request->text();
   std::string parent_id = request->parent_id();
   slbe_.Chirp(username, text, parent_id);
-  std::cout << "this chirp w user: " << username << " text: " << text << std::endl;
-  int hi = 0;
-  std::string s = "plzwork";
+  std::cout << "Chirping: " << username << "\'s text: " << text << std::endl;
   return grpc::Status::OK;
 }
 
 grpc::Status ServiceLayerServer::follow(grpc::ServerContext* context, const chirp::FollowRequest* request, chirp::FollowReply* reply) {
+  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   std::string to_follow = request->to_follow();
   slbe_.Follow(username, to_follow);
   return grpc::Status::OK;
 }
 grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply) {
+  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::vector<chirp::Chirp> values = slbe_.Read(request->chirp_id());
   for(chirp::Chirp val : values) {
     chirp::Chirp* createdChirp = reply->add_chirps();
@@ -34,14 +36,11 @@ grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp:
     createdChirp->set_id(val.id());
     createdChirp->set_parent_id(val.parent_id());
     std::cout << "at this pt im getting: " << val.username() << " " << val.text() << std::endl;
-    // TODO: make it a real timestamp
-    // createdChirp->set_timestamp(val.timestamp());
   }
   return grpc::Status::OK;
 }
 grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, grpc::ServerWriter<chirp::MonitorReply>* stream) {
-  // TODO: figure out what goes in here???
-  // use key value server as a reference
+  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   chirp::MonitorReply reply;
   std::string username = request->username();
   chirp::Chirp ch = slbe_.Monitor(username);

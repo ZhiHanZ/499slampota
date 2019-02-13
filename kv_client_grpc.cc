@@ -7,38 +7,26 @@ KeyValueClient::KeyValueClient() {
 }
 
 KeyValueClient::~KeyValueClient() {}
-// KeyValueClient::KeyValueClient(std::shared_ptr<Channel> channel)
-//       : stub_(Greeter::NewStub(channel)){}
 
-// Assembles the client's payload, sends it and presents the response back
-// from the server.
 void KeyValueClient::Put(const std::string& key, const std::string& value) {
-  // Data we are sending to the server.
+  // set the fields of the request to pass to KeyValueServer
   chirp::PutRequest request;
   request.set_key(key);
   request.set_value(value);
-
-  // Container for the data we expect from the server.
   chirp::PutReply reply;
-
-  // Context for the client. It could be used to convey extra information to
-  // the server and/or tweak certain RPC behaviors.
   grpc::ClientContext context;
-
-  // The actual RPC.
+  // call KeyValyeServer's put function
   grpc::Status status = stub_->put(&context, request, &reply);
   
 }
 
 std::vector<std::string> KeyValueClient::Get(const std::string& key) {
+  // set the fields of the request to pass to KeyValueServer
   chirp::GetRequest request;
   request.set_key(key);
-
   chirp::GetReply reply;
-
   grpc::ClientContext context;
-  //grpc::ServerReaderWriter<chirp::GetReply, chirp::GetRequest>* stream;
-
+  // call KeyValyeServer's get function
   std::unique_ptr<grpc::ClientReaderWriter<chirp::GetRequest, chirp::GetReply> > stream_handle (stub_->get(&context));
   stream_handle->Write(request);
   std::vector<std::string> values;
@@ -50,12 +38,11 @@ std::vector<std::string> KeyValueClient::Get(const std::string& key) {
 }
 
 void KeyValueClient::DeleteKey(const std::string& key) {
+  // set the fields of the request to pass to KeyValueServer
   chirp::DeleteRequest request;
   request.set_key(key);
-
   chirp::DeleteReply reply;
-
   grpc::ClientContext context;
-
+  // call KeyValyeServer's deletekey function
   grpc::Status status = stub_->deletekey(&context, request, &reply);
 }

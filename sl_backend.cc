@@ -24,48 +24,42 @@ std::string ServiceLayerBackEnd::RegisterUser(const std::string& username) {
 }
 
 void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
-	// fill in the chirp object with arguments and store it
+	// fill in a chirp object with given arguments
   chirp::Chirp ch;
   ch.set_username(username);
   ch.set_text(text);
+  // retrieve the keyCounter from the KeyValueStore to create a unique chirp id
   std::string keyCounter = kv_client_.Get("keyCounterForDataMap")[0];
-
   std::string chirp_id = "chirp_by: " + username + " " + keyCounter;
+  // increment the keyCounter and restore it
   int iKeyCounter = std::stoi(keyCounter);
   iKeyCounter++;
   std::string updatedKeyCounter = std::to_string(iKeyCounter);
   kv_client_.Put("keyCounterForDataMap", updatedKeyCounter);
   if(parent_id == "")
   {
-  	std::cout << "inserting chirp with id: " << chirp_id << " and no parent id" << std::endl;
+  	std::cout << "sl_backend chirp: " << chirp_id << " w no parent id" << std::endl;
   }
   else {
-  	std::cout << "inserting chirp with id: " << chirp_id << " and parent id: " << parent_id << std::endl;
+  	std::cout << "sl_backend chirp: " << chirp_id << " w parent id: " << parent_id << std::endl;
   }
   std::cout << "line 39" << std::endl;
-  ch.set_id(chirp_id);
-  std::cout << "line 41" << std::endl;
-  ch.set_parent_id(parent_id);
-  std::cout << "line 43" << std::endl;
-  chirp::Timestamp time;
-  //ch.set_timestamp(time);
-  // TODO: get the real timestamp
+  // serialize the chirp before sending it to the KeyValueDataStore
   std::string serialized_chirp;
   ch.SerializeToString(&serialized_chirp);
 	kv_client_.Put(chirp_id, serialized_chirp);
-	// kv_client_.Put(parent_id, serialized_chirp);
-	// TODO: get the parent id chirp and see if it has a parent id and if so - put the serialized chirp in their parent to - and so on and so on
+	// link this tweet to any tweet it was replying to/in a thread with
 	std::string pid = ch.parent_id();
 	while(pid != "") 
 	{
-		std::cout << "ths should print once for pid jill and again for pid steph" << std::endl;
+		std::cout << "has a parent" << std::endl;
 		kv_client_.Put(pid, serialized_chirp);
 		chirp::Chirp hold;
 		hold.ParseFromString(kv_client_.Get(pid)[0]);
 		pid = hold.parent_id();
 	}
+	// place the chirp in the "newest" key so that monitoring users may access it
 	kv_client_.Put("newest", serialized_chirp);
-	key_counter_++;
   std::cout << "line 63" << std::endl;
 }
 
@@ -74,19 +68,21 @@ void ServiceLayerBackEnd::Follow(const std::string& username, const std::string&
 } 
 
 std::vector<chirp::Chirp> ServiceLayerBackEnd::Read(const std::string& chirp_id) {
+	// retrieve the vector of strings from the KeyValueStore 
 	std::vector<chirp::Chirp> values;
 	for(const std::string& val : kv_client_.Get(chirp_id)) {
 		chirp::Chirp ch;
+		// and parse the strings into Chirps to send back into the ServiceLayer
 		ch.ParseFromString(val);
 		values.push_back(ch);
 	}
 	return values;
 }
 
-// TODO: Figure out how to make monitor work over and over
+
 chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
-	// grab whatever is currently in the newest 
-	// so that whenever the chirp id in newest changes we can send it upwards
+	// keep track of whatever is currently in the "newest" key
+	// so that whenever the chirp id in "newest" changes we send it to the monitoring user
 	std::string current_chirp = kv_client_.Get("newest")[0];
 	chirp::Chirp cc;
 	cc.ParseFromString(current_chirp);
@@ -98,7 +94,7 @@ chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
 	{
 		newest_chirp = kv_client_.Get("newest")[0];
 		ch.ParseFromString(newest_chirp);
-		// see if it's a new chirp
+		// check if the chirp is new
 		if(ch.id() != old_chirp_id)
 		{
 			// mark a new chirp as now old
@@ -119,6 +115,5 @@ chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
 				return ch;
 			}
 		}
-
 	}
 }
