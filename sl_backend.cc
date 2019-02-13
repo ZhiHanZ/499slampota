@@ -9,7 +9,7 @@ ServiceLayerBackEnd::~ServiceLayerBackEnd() {}
 
 std::string ServiceLayerBackEnd::RegisterUser(const std::string& username) {
 	// disallow "newest" as a username, because it is reserved to hold new chirps
-	if(username == "newest")
+	if((username == "newest") || (username == "keyCounterForDataMap"))
 	{
 		return "That username is unavailable";
 	}
@@ -28,7 +28,13 @@ void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& 
   chirp::Chirp ch;
   ch.set_username(username);
   ch.set_text(text);
-  std::string chirp_id = "chirp_by: " + username + " " + std::to_string(key_counter_);
+  std::string keyCounter = kv_client_.Get("keyCounterForDataMap")[0];
+
+  std::string chirp_id = "chirp_by: " + username + " " + keyCounter;
+  int iKeyCounter = std::stoi(keyCounter);
+  iKeyCounter++;
+  std::string updatedKeyCounter = std::to_string(iKeyCounter);
+  kv_client_.Put("keyCounterForDataMap", updatedKeyCounter);
   if(parent_id == "")
   {
   	std::cout << "inserting chirp with id: " << chirp_id << " and no parent id" << std::endl;

@@ -3,12 +3,12 @@
 std::mutex mtx;
 
 KeyValueBackEnd::KeyValueBackEnd() {
-	// std::pair<std::string, std::vector<std::string> > keyCounter;
-	// std::vector<std::string> v;
-	// v.push_back("0");
-	// keyCounter.first = "keyCounterForDataMap";
-	// keyCounter.second = v;
-	// data_map_.insert(keyCounter);
+	std::pair<std::string, std::vector<std::string> > keyCounter;
+	std::vector<std::string> v;
+	v.push_back("0");
+	keyCounter.first = "keyCounterForDataMap";
+	keyCounter.second = v;
+	data_map_.insert(keyCounter);
 }
 
 KeyValueBackEnd::~KeyValueBackEnd() {}
@@ -22,9 +22,9 @@ void KeyValueBackEnd::Put(const std::string& key, const std::string& value) {
 	// see if key is already in the map
 	std::lock_guard<std::mutex> lock(mtx);
 	std::map<std::string,std::vector<std::string> >::iterator it = data_map_.find(key);
-	if(key == "newest")
+	if((key == "newest") || (key == "keyCounterForDataMap"))
 	{
-		std::cout << "updating newest!! w " << value << std::endl;
+		std::cout << "updating newest or key count!! w " << value << std::endl;
 		data_map_.erase(key);
 		std::pair<std::string, std::vector<std::string> > createChirp;
 		std::vector<std::string> v;
