@@ -71,7 +71,7 @@ std::vector<chirp::Chirp> ServiceLayerClient::Read(const std::string& chirp_id) 
   return values;
 }
 
-std::string ServiceLayerClient::Monitor(const std::string& username) {
+chirp::Chirp ServiceLayerClient::Monitor(const std::string& username) {
   chirp::MonitorRequest request;
   request.set_username(username);
 
@@ -79,5 +79,11 @@ std::string ServiceLayerClient::Monitor(const std::string& username) {
 
   grpc::ClientContext context;
 
-  std::unique_ptr< ::grpc::ClientReader< ::chirp::MonitorReply>> stream_handle = stub_->monitor(&context, request);
+  std::unique_ptr<grpc::ClientReader<chirp::MonitorReply> > stream_handle = stub_->monitor(&context, &request);
+  while(stream_handle->Read(&reply))
+  {
+    // print it out
+    chirp::Chirp ch = reply.chirp();
+    std::cout << ch.username() << ": " << ch.text() <<  " with a chirp id of: [" << ch.id() << "]" << std::endl;
+  }
 }
