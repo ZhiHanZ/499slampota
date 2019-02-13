@@ -4,8 +4,8 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <grpcpp/grpcpp.h>
 
+#include <grpcpp/grpcpp.h>
 #include "chirpkv.grpc.pb.h"
 #include "kv_backend.h"
 

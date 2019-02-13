@@ -4,8 +4,8 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <grpcpp/grpcpp.h>
 
+#include <grpcpp/grpcpp.h>
 #include "chirpsl.grpc.pb.h"
 #include "sl_backend.h"
 
@@ -21,7 +21,7 @@ class ServiceLayerServer final : public chirp::ServiceLayer::Service {
     // makes a call to the service layer backend's 'RegisterUser' function 
     grpc::Status read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply);
     // makes a call to the service layer backend's 'RegisterUser' function 
-    grpc::Status monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, chirp::MonitorReply* reply);
+    grpc::Status monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, grpc::ServerWriter<chirp::MonitorReply>* stream) override;
   private:
   	// private instance of service layer's backend so that we can call it's functions
     ServiceLayerBackEnd slbe_;

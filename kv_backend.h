@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <mutex>
 
 // true kv_backend implementation that stores all raw data
 class KeyValueBackEnd {

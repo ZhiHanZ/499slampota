@@ -79,7 +79,7 @@ chirp::Chirp ServiceLayerClient::Monitor(const std::string& username) {
 
   grpc::ClientContext context;
 
-  std::unique_ptr<grpc::ClientReader<chirp::MonitorReply> > stream_handle = stub_->monitor(&context, &request);
+  std::unique_ptr<grpc::ClientReader<chirp::MonitorReply> > stream_handle = stub_->monitor(&context, request);
   while(stream_handle->Read(&reply))
   {
     // print it out

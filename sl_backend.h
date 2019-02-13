@@ -5,10 +5,9 @@
 #include <map>
 #include <set>
 #include <vector>
+
 #include <grpcpp/grpcpp.h>
 #include "kv_client_grpc.h"
-// #include "protos/chirpsl.grpc.pb.h"
-// #else
 #include "chirpsl.grpc.pb.h"
 
 // service layer backend class that can strategically call the key value grpc client functions
@@ -29,7 +28,7 @@ class ServiceLayerBackEnd {
 		// finds the chirp with the given chirp_id in the key value storage
 		std::vector<chirp::Chirp> Read(const std::string& chirp_id);
 		// allows a constant stream of incoming chirps to be returned to the 'username' who wishes to monitor chirps
-		std::string Monitor(const std::string& username);
+		chirp::Chirp Monitor(const std::string& username);
 	private:
 		// instance of the key value client (grpc) on which to call Put, Get, and Delete
 		KeyValueClient kv_client_; 

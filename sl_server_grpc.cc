@@ -1,4 +1,5 @@
 #include "sl_server_grpc.h"
+
 #include <iostream>
 
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
@@ -13,6 +14,8 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string parent_id = request->parent_id();
   slbe_.Chirp(username, text, parent_id);
   std::cout << "this chirp w user: " << username << " text: " << text << std::endl;
+  int hi = 0;
+  std::string s = "plzwork";
   return grpc::Status::OK;
 }
 
@@ -36,10 +39,16 @@ grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp:
   }
   return grpc::Status::OK;
 }
-grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, chirp::MonitorReply* reply) {
+grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, grpc::ServerWriter<chirp::MonitorReply>* stream) {
   // TODO: figure out what goes in here???
+  // use key value server as a reference
+  chirp::MonitorReply reply;
   std::string username = request->username();
-  //*reply = slbe_.Monitor(username);
+  chirp::Chirp ch = slbe_.Monitor(username);
+  reply.set_allocated_chirp(&ch);
+  chirp::MonitorReply& sendingReply = reply;
+  stream->Write(sendingReply);
+  
   return grpc::Status::OK;
 }
 
