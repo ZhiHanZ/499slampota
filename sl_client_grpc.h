@@ -26,7 +26,7 @@ class ServiceLayerClient {
 	  // function call to the server-side grpc's version of 'read'
 	  std::vector<chirp::Chirp> Read(const std::string& chirp_id);
 	  // function call to the server-side grpc's version of 'monitor'
-	  chirp::Chirp Monitor(const std::string& username);
+	  void Monitor(const std::string& username);
 	 private:
 	  // unique pointer to the ServiceLayerServer
 	  std::unique_ptr<chirp::ServiceLayer::Stub> stub_;

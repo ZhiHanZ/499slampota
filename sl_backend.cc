@@ -82,7 +82,7 @@ std::vector<chirp::Chirp> ServiceLayerBackEnd::Read(const std::string& chirp_id)
 }
 
 
-chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
+void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWriter<chirp::MonitorReply>* stream) {
 	// keep track of whatever is currently in the "newest" key
 	// so that whenever the chirp id in "newest" changes we send it to the monitoring user
 	if(kv_client_.Get("newest").empty())
@@ -98,15 +98,13 @@ chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
 	chirp::Chirp ch;
 	while(true)
 	{
-		std::cout << "enter monitor" << std::endl;
 		if(kv_client_.Get("newest").empty())
 		{
 			std::cout <<"OH NO EMPTY" << std::endl;
 		}
 		newest_chirp = kv_client_.Get("newest")[0];
-		ch.ParseFromString(newest_chirp);
-		std::cout 
 		// check if the chirp is new
+		ch.ParseFromString(newest_chirp);		
 		if(ch.id() != old_chirp_id)
 		{
 			// mark a new chirp as now old
@@ -124,7 +122,10 @@ chirp::Chirp ServiceLayerBackEnd::Monitor(const std::string& username) {
 			// if the chirp was both new and relevant - send it!
 			if(relevant)
 			{
-				return ch;
+				chirp::MonitorReply reply;
+			  reply.set_allocated_chirp(&ch);
+			  const chirp::MonitorReply& sendingReply = reply;
+			  stream->Write(sendingReply);
 			}
 		}
 	}

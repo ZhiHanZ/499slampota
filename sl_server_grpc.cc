@@ -15,6 +15,9 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string text = request->text();
   std::string parent_id = request->parent_id();
   slbe_.Chirp(username, text, parent_id);
+  std::cout << username << std::endl;
+  std::cout << text << std::endl;
+  std::cout << parent_id << std::endl;
   std::cout << "Chirping: " << username << "\'s text: " << text << "parent: " << parent_id << std::endl;
   return grpc::Status::OK;
 }
@@ -39,14 +42,17 @@ grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp:
   }
   return grpc::Status::OK;
 }
+
 grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, grpc::ServerWriter<chirp::MonitorReply>* stream) {
-  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
-  chirp::MonitorReply reply;
+  // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
+  // chirp::MonitorReply reply;
   std::string username = request->username();
-  chirp::Chirp ch = slbe_.Monitor(username);
-  reply.set_allocated_chirp(&ch);
-  chirp::MonitorReply& sendingReply = reply;
-  stream->Write(sendingReply);
+  slbe_.Monitor(username, stream);
+
+  // reply.set_allocated_chirp(&ch);
+  // stream->Write(reply);
+  // chirp::MonitorReply& sendingReply = reply;
+  // stream->Write(sendingReply);
   
   return grpc::Status::OK;
 }

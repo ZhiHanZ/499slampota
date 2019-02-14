@@ -28,7 +28,7 @@ class ServiceLayerBackEnd {
 		// finds the chirp with the given chirp_id in the key value storage
 		std::vector<chirp::Chirp> Read(const std::string& chirp_id);
 		// allows a constant stream of incoming chirps to be returned to the 'username' who wishes to monitor chirps
-		chirp::Chirp Monitor(const std::string& username);
+		void Monitor(const std::string& username, grpc::ServerWriter<chirp::MonitorReply>* stream);
 	private:
 		// instance of the key value client (grpc) on which to call Put, Get, and Delete
 		KeyValueClient kv_client_; 

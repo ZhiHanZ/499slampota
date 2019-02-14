@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	// std::cout << FLAGS_follow << std::endl;
 	// std::cout << FLAGS_read << std::endl;
 	// std::cout << FLAGS_monitor << std::endl;
-
+	
 	// ServiceLayerClient slc;
 	// std::string username = "";
 	// if(FLAGS_register.size() > 0)
@@ -125,6 +125,7 @@ int main(int argc, char **argv)
 	slc.Follow("tester", "stephanie");
 	slc.Chirp("stephanie", "first tweet", "");
 	slc.Monitor("tester");
+	std::cout << "finished!" << std::endl;
 	
 	return 0;
 }
