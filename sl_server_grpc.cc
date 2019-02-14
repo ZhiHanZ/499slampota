@@ -48,7 +48,7 @@ grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chi
   // chirp::MonitorReply reply;
   std::string username = request->username();
   slbe_.Monitor(username, stream);
-
+  std::cout << "I SHOULD NEVER GET HERE" << std::endl;
   // reply.set_allocated_chirp(&ch);
   // stream->Write(reply);
   // chirp::MonitorReply& sendingReply = reply;
