@@ -85,6 +85,7 @@ std::vector<chirp::Chirp> ServiceLayerBackEnd::Read(const std::string& chirp_id)
 void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWriter<chirp::MonitorReply>* stream) {
 	// keep track of whatever is currently in the "newest" key
 	// so that whenever the chirp id in "newest" changes we send it to the monitoring user
+
 	std::string current_chirp = kv_client_.Get("newest")[0];
 	chirp::Chirp cc;
 	cc.ParseFromString(current_chirp);
@@ -92,7 +93,8 @@ void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWrite
 	std::vector<std::string> following = kv_client_.Get(username);
 	std::string newest_chirp;
 	chirp::Chirp ch;
-	while(true)
+	bool fake = true;
+	while(fake)
 	{
 		newest_chirp = kv_client_.Get("newest")[0];
 		// check if the chirp is new
@@ -122,5 +124,7 @@ void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWrite
 			  std::cout << "successful write" << std::endl;
 			}
 		}
+		fake = !fake;
+		fake = !fake;
 	}
 }
