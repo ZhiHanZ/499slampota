@@ -101,7 +101,7 @@ void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWrite
 					relevant = true;
 				}
 			}
-			// if the chirp was both new and relevant - send it!
+			// if the chirp was both new and relevant - send it
 			if(relevant)
 			{
 			  chirp::MonitorReply reply;
