@@ -25,6 +25,8 @@ $ make && sudo make install
 
 You should be within the vagrant folder still, and this is where you should clone or download this repository.
 
+Run sudo apt-get install libgflags-dev
+
 To compile the proto files, run the following:
 
 $ protoc -I ./protos --cpp_out=. /protos/chirpkv.proto
