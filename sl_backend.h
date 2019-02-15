@@ -31,7 +31,7 @@ class ServiceLayerBackEnd {
 		void Monitor(const std::string& username, grpc::ServerWriter<chirp::MonitorReply>* stream);
 	private:
 		// instance of the key value client (grpc) on which to call Put, Get, and Delete
-		KeyValueClient kv_client_; 
+		KeyValueClient key_value_client_; 
 };
 
 #endif /*CPP_SL_BACKEND_H_*/

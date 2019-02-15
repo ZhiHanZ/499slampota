@@ -16,8 +16,7 @@ ServiceLayerClient::~ServiceLayerClient() {}
   grpc::ClientContext context;
   // call ServiceLayerServer's registeruser function
   grpc::Status status = stub_->registeruser(&context, request, &reply);
-  // TODO: fix this
-  return "what do i return here since register reply is empty???";
+  return "success";
 }
 
 void ServiceLayerClient::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
@@ -30,7 +29,6 @@ void ServiceLayerClient::Chirp(const std::string& username, const std::string& t
   grpc::ClientContext context;
   // call ServiceLayerServer's chirp function
   grpc::Status status = stub_->chirp(&context, request, &reply);
-  std::cout << "got back here" << std::endl;
 }
 
 void ServiceLayerClient::Follow(const std::string& username, const std::string& to_follow) {
@@ -56,8 +54,7 @@ std::vector<chirp::Chirp> ServiceLayerClient::Read(const std::string& chirp_id) 
   grpc::Status status = stub_->read(&context, request, &reply);
   // create a vector to hold the possible thread of chirps and their replies
   std::vector<chirp::Chirp> values;
-  for(int i = 0; i < reply.chirps_size(); i++)
-  {
+  for (int i = 0; i < reply.chirps_size(); i++) {
     values.push_back(reply.chirps(i));
   }
   return values;
@@ -75,10 +72,10 @@ void ServiceLayerClient::Monitor(const std::string& username) {
   while(stream_handle->Read(&reply))
   {
     // print the incoming messages out as formatted chirps
-    chirp::Chirp ch = reply.chirp();
-    std::cout << ch.username() << ": " << std::endl;
-    std::cout << "\"" << ch.text() << "\"" << std::endl;
-    std::cout << "with a chirp id of: [" << ch.id() << "]" << std::endl;
+    chirp::Chirp incoming_chirp = reply.chirp();
+    std::cout << incoming_chirp.username() << ": " << std::endl;
+    std::cout << "\"" << incoming_chirp.text() << "\"" << std::endl;
+    std::cout << "with a chirp id of: [" << incoming_chirp.id() << "]" << std::endl;
     std::cout << std::endl;
   }
 }

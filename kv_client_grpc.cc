@@ -30,8 +30,7 @@ std::vector<std::string> KeyValueClient::Get(const std::string& key) {
   std::unique_ptr<grpc::ClientReaderWriter<chirp::GetRequest, chirp::GetReply> > stream_handle (stub_->get(&context));
   stream_handle->Write(request);
   std::vector<std::string> values;
-  while(stream_handle->Read(&reply))
-  {
+  while (stream_handle->Read(&reply)) {
     values.push_back(reply.value());
   }
   return values;

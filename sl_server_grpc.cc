@@ -5,7 +5,7 @@
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
   //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
-  slbe_.RegisterUser(username);
+  service_layer_back_end_.RegisterUser(username);
   return grpc::Status::OK;
 }
 
@@ -14,11 +14,7 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string username = request->username();
   std::string text = request->text();
   std::string parent_id = request->parent_id();
-  slbe_.Chirp(username, text, parent_id);
-  std::cout << username << std::endl;
-  std::cout << text << std::endl;
-  std::cout << parent_id << std::endl;
-  std::cout << "Chirping: " << username << "\'s text: " << text << "parent: " << parent_id << std::endl;
+  service_layer_back_end_.Chirp(username, text, parent_id);
   return grpc::Status::OK;
 }
 
@@ -26,34 +22,26 @@ grpc::Status ServiceLayerServer::follow(grpc::ServerContext* context, const chir
   //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   std::string to_follow = request->to_follow();
-  slbe_.Follow(username, to_follow);
+  service_layer_back_end_.Follow(username, to_follow);
   return grpc::Status::OK;
 }
 grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply) {
   //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
-  std::vector<chirp::Chirp> values = slbe_.Read(request->chirp_id());
-  for(chirp::Chirp val : values) {
-    chirp::Chirp* createdChirp = reply->add_chirps();
-    createdChirp->set_username(val.username());
-    createdChirp->set_text(val.text());
-    createdChirp->set_id(val.id());
-    createdChirp->set_parent_id(val.parent_id());
-    std::cout << "at this pt im getting: " << val.username() << " " << val.text() << std::endl;
+  std::vector<chirp::Chirp> values = service_layer_back_end_.Read(request->chirp_id());
+  for (chirp::Chirp val : values) {
+    chirp::Chirp* created_chirp = reply->add_chirps();
+    created_chirp->set_username(val.username());
+    created_chirp->set_text(val.text());
+    created_chirp->set_id(val.id());
+    created_chirp->set_parent_id(val.parent_id());
   }
   return grpc::Status::OK;
 }
 
 grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chirp::MonitorRequest* request, grpc::ServerWriter<chirp::MonitorReply>* stream) {
   // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
-  // chirp::MonitorReply reply;
   std::string username = request->username();
-  slbe_.Monitor(username, stream);
-  std::cout << "I SHOULD NEVER GET HERE" << std::endl;
-  // reply.set_allocated_chirp(&ch);
-  // stream->Write(reply);
-  // chirp::MonitorReply& sendingReply = reply;
-  // stream->Write(sendingReply);
-  
+  service_layer_back_end_.Monitor(username, stream);
   return grpc::Status::OK;
 }
 
