@@ -79,15 +79,3 @@ void ServiceLayerClient::Monitor(const std::string& username) {
     std::cout << std::endl;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,14 +3,14 @@
 #include <iostream>
 
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
-  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
+  // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   service_layer_back_end_.RegisterUser(username);
   return grpc::Status::OK;
 }
 
 grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp::ChirpRequest* request, chirp::ChirpReply* reply) {
-  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
+  // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   std::string text = request->text();
   std::string parent_id = request->parent_id();
@@ -19,14 +19,14 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
 }
 
 grpc::Status ServiceLayerServer::follow(grpc::ServerContext* context, const chirp::FollowRequest* request, chirp::FollowReply* reply) {
-  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
+  // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   std::string to_follow = request->to_follow();
   service_layer_back_end_.Follow(username, to_follow);
   return grpc::Status::OK;
 }
 grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply) {
-  //unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
+  // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::vector<chirp::Chirp> values = service_layer_back_end_.Read(request->chirp_id());
   for (chirp::Chirp val : values) {
     chirp::Chirp* created_chirp = reply->add_chirps();
