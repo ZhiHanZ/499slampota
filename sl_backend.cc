@@ -2,28 +2,31 @@
 
 #include <iostream>
 
-
 ServiceLayerBackEnd::ServiceLayerBackEnd() {}
 
 ServiceLayerBackEnd::~ServiceLayerBackEnd() {}
 
 std::string ServiceLayerBackEnd::RegisterUser(const std::string& username) {
+	std::cout << username <<std::endl;
 	// disallow "newest" as a username, because it is reserved to hold new chirps
-	if((username == "newest") || (username == "keyCounterForDataMap"))
+	if((username == "newest") || (username == "keyCounterForDataMap") || username == "registered user")
 	{
-		return "That username is unavailable";
+		return "illegal";
 	}
 	// check if the username is already taken
-	if(!((key_value_client_.Get(username)).empty())) {
-		return "That username already exists";
+	std::vector<std::string> v = key_value_client_.Get(username);
+	std::cout << "size of v: " << v.size() << std::endl;
+	if(!(v.empty())) {
+		std::cout << "v was not empty" << std::endl;
+		return "taken";
 	}
 	else {
-		key_value_client_.Put(username, "");
+		key_value_client_.Put(username, "registered user");
 		return "success";
 	}
 }
 
-void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
+std::string ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
 	// fill in a chirp object with given arguments
   chirp::Chirp ch;
   ch.set_username(username);
@@ -37,26 +40,49 @@ void ServiceLayerBackEnd::Chirp(const std::string& username, const std::string& 
   int int_key_counter = std::stoi(key_counter);
   int_key_counter++;
   std::string updated_key_counter = std::to_string(int_key_counter);
-  key_value_client_.Put("keyCounterForDataMap", updated_key_counter);
   // serialize the chirp before sending it to the KeyValueDataStore
   std::string serialized_chirp;
   ch.SerializeToString(&serialized_chirp);
-	key_value_client_.Put(chirp_id, serialized_chirp);
 	// link this tweet to any tweet it was replying to/in a thread with
-	std::string pid = ch.parent_id();
-	while(pid != "") 
+	std::string parent_chirp_id = ch.parent_id();
+	std::vector<std::string> parent_validity = key_value_client_.Get(parent_chirp_id);
+	std::cout << "parent_chirp_id: " << parent_chirp_id <<std::endl;
+	for(unsigned int i = 0; i < parent_validity.size(); i++)
 	{
-		key_value_client_.Put(pid, serialized_chirp);
+		std::cout << "parval" << i << " is: " << parent_validity[i] << std::endl;
+	}
+	std::cout << "pv size: " << parent_validity.size() << std::endl;
+	if((parent_chirp_id != "") && (parent_validity.size() == 0))
+	{
+		std::cout << "piddne" << std::endl;
+		return "parent id does not exist";
+	}
+	key_value_client_.DeleteKey("keyCounterForDataMap");
+  key_value_client_.Put("keyCounterForDataMap", updated_key_counter);
+	key_value_client_.Put(chirp_id, serialized_chirp);
+	while(parent_chirp_id != "") 
+	{
+		key_value_client_.Put(parent_chirp_id, serialized_chirp);
 		chirp::Chirp hold;
-		hold.ParseFromString(key_value_client_.Get(pid)[0]);
-		pid = hold.parent_id();
+		hold.ParseFromString(key_value_client_.Get(parent_chirp_id)[0]);
+		parent_chirp_id = hold.parent_id();
 	}
 	// place the chirp in the "newest" key so that monitoring users may access it
+	key_value_client_.DeleteKey("newest");
 	key_value_client_.Put("newest", serialized_chirp);
+	return "success";
 }
 
-void ServiceLayerBackEnd::Follow(const std::string& username, const std::string& to_follow) {
+std::string ServiceLayerBackEnd::Follow(const std::string& username, const std::string& to_follow) {
+	std::vector<std::string> does_to_follow_exist = key_value_client_.Get(to_follow);
+	if(does_to_follow_exist.empty())
+	{
+		std::cout << "no one to follow with that name" << std::endl;
+		return "user to follow does not exist";
+	}
 	key_value_client_.Put(username, to_follow);
+	std::cout << "callled put " << std::endl;
+	return "success";
 } 
 
 std::vector<chirp::Chirp> ServiceLayerBackEnd::Read(const std::string& chirp_id) {
@@ -75,20 +101,31 @@ std::vector<chirp::Chirp> ServiceLayerBackEnd::Read(const std::string& chirp_id)
 void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWriter<chirp::MonitorReply>* stream) {
 	// keep track of whatever is currently in the "newest" key
 	// so that whenever the chirp id in "newest" changes we send it to the monitoring user
-	std::string current_chirp_string = key_value_client_.Get("newest")[0];
-	chirp::Chirp current_chirp;
-	current_chirp.ParseFromString(current_chirp_string);
-	std::string old_chirp_id = current_chirp.id();
+	std::vector<std::string> recent_chirps = key_value_client_.Get("newest");
+	std::string old_chirp_id;
+	if (recent_chirps.size() != 0) {
+		std::string current_chirp_string = recent_chirps[recent_chirps.size()-1];
+		chirp::Chirp current_chirp;
+		current_chirp.ParseFromString(current_chirp_string);
+		old_chirp_id = current_chirp.id();
+	} else {
+		old_chirp_id = "everything is new";
+	}
+	
 	std::vector<std::string> following = key_value_client_.Get(username);
 	std::string newest_chirp;
 	chirp::Chirp candidate_chirp;
-	while(true)
+	while (true)
 	{
-		newest_chirp = key_value_client_.Get("newest")[0];
-		// check if the chirp is new
+		recent_chirps = key_value_client_.Get("newest");
+		if (recent_chirps.size() == 0) {
+			continue;
+		}
+		newest_chirp = recent_chirps[recent_chirps.size()-1];
 		candidate_chirp.ParseFromString(newest_chirp);		
 		if(candidate_chirp.id() != old_chirp_id)
 		{
+			std::cout << "Got a new one" << std::endl;
 			// mark a new chirp as now old
 			old_chirp_id = candidate_chirp.id();
 			// check if the chirp is by someone the user is following
@@ -98,16 +135,20 @@ void ServiceLayerBackEnd::Monitor(const std::string& username, grpc::ServerWrite
 				std::cout << following[i];
 				if(following[i] == candidate_chirp.username())
 				{
+					std::cout << "And its relevant" <<std::endl;
 					relevant = true;
 				}
 			}
 			// if the chirp was both new and relevant - send it
 			if(relevant)
 			{
-			  chirp::MonitorReply reply;
-			  reply.set_allocated_chirp(&candidate_chirp);
-			  const chirp::MonitorReply& kSendingReply = reply;
-			  stream->Write(kSendingReply);
+				std::cout << "sending... " <<std::endl;
+				chirp::Chirp* this_chirp = new chirp::Chirp();
+        this_chirp->CopyFrom(candidate_chirp);
+        chirp::MonitorReply reply;
+        reply.set_allocated_chirp(this_chirp);
+        chirp::MonitorReply sendingReply = reply;
+        stream->Write(sendingReply);
 			}
 		}
 	}

@@ -22,9 +22,9 @@ class ServiceLayerBackEnd {
 		std::string RegisterUser(const std::string& username);
 		// places a chirp object into key value storage
 		// can be placed in on its own or as a reply
-		void Chirp(const std::string& username, const std::string& text, const std::string& parent_id);
+		std::string Chirp(const std::string& username, const std::string& text, const std::string& parent_id);
 		// allows 'username' to follow 'to_follow' by adding 'to_follow' to the set of users that 'username' is following 
-		void Follow(const std::string& username, const std::string& to_follow);
+		std::string Follow(const std::string& username, const std::string& to_follow);
 		// finds the chirp with the given chirp_id in the key value storage
 		std::vector<chirp::Chirp> Read(const std::string& chirp_id);
 		// allows a constant stream of incoming chirps to be returned to the 'username' who wishes to monitor chirps

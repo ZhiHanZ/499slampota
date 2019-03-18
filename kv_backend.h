@@ -24,6 +24,8 @@ class KeyValueBackEnd {
 	private:
 		// key - string, value - vector of strings
 		std::map<std::string, std::vector<std::string> > data_map_;	
+		// mutex to keep the database thread safe
+		std::mutex mutex_lock;
 };
 
 #endif /*CPP_KV_BACKEND_H_*/
