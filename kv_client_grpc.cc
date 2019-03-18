@@ -15,7 +15,7 @@ void KeyValueClient::Put(const std::string& key, const std::string& value) {
   request.set_value(value);
   chirp::PutReply reply;
   grpc::ClientContext context;
-  // call KeyValyeServer's put function
+  // call KeyValueServer's put function
   grpc::Status status = stub_->put(&context, request, &reply);
   
 }

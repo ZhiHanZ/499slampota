@@ -8,7 +8,7 @@ ServiceLayerClient::ServiceLayerClient() {
 
 ServiceLayerClient::~ServiceLayerClient() {}
 
-  std::string ServiceLayerClient::RegisterUser(const std::string& username) {
+std::string ServiceLayerClient::RegisterUser(const std::string& username) {
   // set the fields of the request to pass to ServiceLayerServer
   chirp::RegisterRequest request;
   request.set_username(username);
@@ -16,10 +16,15 @@ ServiceLayerClient::~ServiceLayerClient() {}
   grpc::ClientContext context;
   // call ServiceLayerServer's registeruser function
   grpc::Status status = stub_->registeruser(&context, request, &reply);
+  if (status.error_code() == grpc::StatusCode::ALREADY_EXISTS) {
+    return "taken";
+  } else if (status.error_code() == grpc::StatusCode::NOT_FOUND) {
+    return "illegal";
+  }
   return "success";
 }
 
-void ServiceLayerClient::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
+std::string ServiceLayerClient::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
   // set the fields of the request to pass to ServiceLayerServer
   chirp::ChirpRequest request;
   request.set_username(username);
@@ -29,9 +34,14 @@ void ServiceLayerClient::Chirp(const std::string& username, const std::string& t
   grpc::ClientContext context;
   // call ServiceLayerServer's chirp function
   grpc::Status status = stub_->chirp(&context, request, &reply);
+
+  if (status.error_code() == grpc::StatusCode::NOT_FOUND) {
+    return "not found";
+  }
+  return "success";
 }
 
-void ServiceLayerClient::Follow(const std::string& username, const std::string& to_follow) {
+std::string ServiceLayerClient::Follow(const std::string& username, const std::string& to_follow) {
   // set the fields of the request to pass to ServiceLayerServer
   chirp::FollowRequest request;
   request.set_username(username);
@@ -42,6 +52,10 @@ void ServiceLayerClient::Follow(const std::string& username, const std::string& 
   grpc::ClientContext context;
   // call ServiceLayerServer's follow function
   grpc::Status status = stub_->follow(&context, request, &reply);
+  if (status.error_code() == grpc::StatusCode::NOT_FOUND) {
+    return "not found";
+  }
+  return "success";
 }
 
 std::vector<chirp::Chirp> ServiceLayerClient::Read(const std::string& chirp_id) {

@@ -29,20 +29,25 @@ Run sudo apt-get install libgflags-dev
 
 To compile the proto files, run the following:
 
-$ protoc -I ./protos --cpp_out=. /protos/chirpkv.proto
-$ protoc -I ./protos --cpp_out=. /protos/chirpsl.proto
+$ protoc -I ./protos --cpp_out=. ./protos/chirpkv.proto
+$ protoc -I ./protos --cpp_out=. ./protos/chirpsl.proto
 $ protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirpkv.proto 
 $ protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirpsl.proto
 
 To compile the other files, run the following:
 
-$ g++ -Wall -std=c++11 -g -c -o kv_backend.o kv_backend.cc
-$ g++ -Wall -std=c++11 -g -c -o kv_server_grpc.o kv_server_grpc.cc
-$ g++ -Wall -std=c++11 -g -c -o kv_client_grpc.o kv_client_grpc.cc
-$ g++ -Wall -std=c++11 -g -c -o sl_backend.o sl_backend.cc
-$ g++ -Wall -std=c++11 -g -c -o sl_server_grpc.o sl_server_grpc.cc
-$ g++ -Wall -std=c++11 -g -c -o sl_client_grpc.o sl_client_grpc.cc
-$ g++ -Wall -std=c++11 -g -c -o client_line.o client_line.cc
+g++ -Wall -std=c++11 -g -c -o chirpsl.grpc.pb.o chirpsl.grpc.pb.cc
+g++ -Wall -std=c++11 -g -c -o chirpsl.pb.o chirpsl.pb.cc
+g++ -Wall -std=c++11 -g -c -o chirpkv.grpc.pb.o chirpkv.grpc.pb.cc
+g++ -Wall -std=c++11 -g -c -o chirpkv.pb.o chirpkv.pb.cc
+g++ -Wall -std=c++11 -g -c -o kv_backend.o kv_backend.cc
+g++ -Wall -std=c++11 -g -c -o kv_backend.o kv_backend.cc
+g++ -Wall -std=c++11 -g -c -o kv_server_grpc.o kv_server_grpc.cc
+g++ -Wall -std=c++11 -g -c -o kv_client_grpc.o kv_client_grpc.cc
+g++ -Wall -std=c++11 -g -c -o sl_backend.o sl_backend.cc
+g++ -Wall -std=c++11 -g -c -o sl_server_grpc.o sl_server_grpc.cc
+g++ -Wall -std=c++11 -g -c -o sl_client_grpc.o sl_client_grpc.cc
+g++ -Wall -std=c++11 -g -c -o client_line.o client_line.cc
 
 To link the files, run in one terminal:
 

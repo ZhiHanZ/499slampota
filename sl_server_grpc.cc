@@ -5,7 +5,12 @@
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
   // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
-  service_layer_back_end_.RegisterUser(username);
+  std::string result = service_layer_back_end_.RegisterUser(username);
+  if (result == "illegal") {
+    return grpc::Status(grpc::StatusCode::NOT_FOUND, "Illegal username.");
+  } else if (result == "taken") {
+    return grpc::Status(grpc::StatusCode::ALREADY_EXISTS, "User Already Exists.");
+  }
   return grpc::Status::OK;
 }
 
@@ -14,7 +19,10 @@ grpc::Status ServiceLayerServer::chirp(grpc::ServerContext* context, const chirp
   std::string username = request->username();
   std::string text = request->text();
   std::string parent_id = request->parent_id();
-  service_layer_back_end_.Chirp(username, text, parent_id);
+  std::string result = service_layer_back_end_.Chirp(username, text, parent_id);
+  if (result != "success") {
+    return grpc::Status(grpc::StatusCode::NOT_FOUND, "Parent id was not found.");
+  }
   return grpc::Status::OK;
 }
 
@@ -22,7 +30,10 @@ grpc::Status ServiceLayerServer::follow(grpc::ServerContext* context, const chir
   // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
   std::string to_follow = request->to_follow();
-  service_layer_back_end_.Follow(username, to_follow);
+  std::string result = service_layer_back_end_.Follow(username, to_follow);
+  if (result != "success") {
+    return grpc::Status(grpc::StatusCode::NOT_FOUND, "User to follow was not found.");
+  }
   return grpc::Status::OK;
 }
 grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp::ReadRequest* request, chirp::ReadReply* reply) {
@@ -34,6 +45,9 @@ grpc::Status ServiceLayerServer::read(grpc::ServerContext* context, const chirp:
     created_chirp->set_text(val.text());
     created_chirp->set_id(val.id());
     created_chirp->set_parent_id(val.parent_id());
+  }
+  if (values.empty()) {
+    return grpc::Status(grpc::StatusCode::NOT_FOUND, "That chirp id was not found.");
   }
   return grpc::Status::OK;
 }

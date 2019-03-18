@@ -20,9 +20,9 @@ class ServiceLayerClient {
 	  // function call to the server-side grpc's version of 'registeruser'
 	  std::string RegisterUser(const std::string& username);
 	  // function call to the server-side grpc's version of 'chirp'
-	  void Chirp(const std::string& username, const std::string& text, const std::string& parent_id);
+	  std::string Chirp(const std::string& username, const std::string& text, const std::string& parent_id);
 	  // function call to the server-side grpc's version of 'follow'
-	  void Follow(const std::string& username, const std::string& to_follow);
+	  std::string Follow(const std::string& username, const std::string& to_follow);
 	  // function call to the server-side grpc's version of 'read'
 	  std::vector<chirp::Chirp> Read(const std::string& chirp_id);
 	  // function call to the server-side grpc's version of 'monitor'
