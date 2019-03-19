@@ -1,12 +1,13 @@
-#ifndef CPP_KV_BACKEND_H_
-#define CPP_KV_BACKEND_H_
+#ifndef CPP_KEY_VALUE_BACKEND_H_
+#define CPP_KEY_VALUE_BACKEND_H_
 
 #include <string>
 #include <map>
 #include <vector>
 #include <mutex>
+#include <iostream>
 
-// true kv_backend implementation that stores all raw data
+// true key_value_backend implementation that stores all raw data
 class KeyValueBackEnd {
 	public:
 		// constructor
@@ -28,4 +29,4 @@ class KeyValueBackEnd {
 		std::mutex mutex_lock;
 };
 
-#endif /*CPP_KV_BACKEND_H_*/
+#endif /*CPP_KEY_VALUE_BACKEND_H_*/

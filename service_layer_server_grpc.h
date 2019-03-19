@@ -1,13 +1,13 @@
-#ifndef CPP_SL_SERVER_GRPC_H_
-#define CPP_SL_SERVER_GRPC_H_
+#ifndef CPP_SERVICE_LAYER_SERVER_GRPC_H_
+#define CPP_SERVICE_LAYER_SERVER_GRPC_H_
 
 #include <iostream>
 #include <memory>
 #include <string>
 
 #include <grpcpp/grpcpp.h>
-#include "chirpsl.grpc.pb.h"
-#include "sl_backend.h"
+#include "chirp_service_layer.grpc.pb.h"
+#include "service_layer_backend.h"
 
 // Service Layer Server part of grpc that makes calls to the true sl_backend
 class ServiceLayerServer final : public chirp::ServiceLayer::Service {
@@ -27,4 +27,4 @@ class ServiceLayerServer final : public chirp::ServiceLayer::Service {
     ServiceLayerBackEnd service_layer_back_end_;
 };
 
-#endif /*CPP_SL_SERVER_GRPC_H_*/
+#endif /*CPP_SERVICE_LAYER_SERVER_GRPC_H_*/

@@ -1,15 +1,15 @@
-#ifndef CPP_KV_SERVER_GRPC_H_
-#define CPP_KV_SERVER_GRPC_H_
+#ifndef CPP_KEY_VALUE_SERVER_GRPC_H_
+#define CPP_KEY_VALUE_SERVER_GRPC_H_
 
 #include <iostream>
 #include <memory>
 #include <string>
 
 #include <grpcpp/grpcpp.h>
-#include "chirpkv.grpc.pb.h"
-#include "kv_backend.h"
+#include "chirp_key_value.grpc.pb.h"
+#include "key_value_backend.h"
 
-// Key Value Server part of grpc that makes calls to the true kv_backendclass KeyValueServer final : public chirp::KeyValueStore::Service {
+// Key Value Server part of grpc that makes calls to the true key_value_backend 
 class KeyValueServer final : public chirp::KeyValueStore::Service {
   public:
   	// function call to the lowest-level key-value backend's version of Put, which inserts into the map
@@ -23,4 +23,4 @@ class KeyValueServer final : public chirp::KeyValueStore::Service {
     KeyValueBackEnd key_value_back_end_;
 };
 
-#endif /*CPP_KV_SERVER_GRPC_H_*/
+#endif /*CPP_KEY_VALUE_SERVER_GRPC_H_*/

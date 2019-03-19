@@ -1,4 +1,4 @@
-#include "sl_client_grpc.h"
+#include "service_layer_client_grpc.h"
 
 ServiceLayerClient::ServiceLayerClient() {
   std::shared_ptr<grpc::Channel> channel = grpc::CreateChannel(

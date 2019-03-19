@@ -1,5 +1,5 @@
-#ifndef CPP_KV_CLIENT_GRPC_H_
-#define CPP_KV_CLIENT_GRPC_H_
+#ifndef CPP_KEY_VALUE_CLIENT_GRPC_H_
+#define CPP_KEY_VALUE_CLIENT_GRPC_H_
 
 #include <iostream>
 #include <memory>
@@ -7,10 +7,10 @@
 #include <vector>
 
 #include <grpcpp/grpcpp.h>
-#include "kv_server_grpc.h"
-#include "chirpkv.grpc.pb.h"
+#include "key_value_server_grpc.h"
+#include "chirp_key_value.grpc.pb.h"
 
-// Key Value Client Class that calls kv_server_grpc functions
+// Key Value Client Class that calls key_value_server_grpc functions
 class KeyValueClient {
 	public:
 		// constructor
@@ -29,4 +29,4 @@ class KeyValueClient {
 		std::unique_ptr<chirp::KeyValueStore::Stub> stub_;
 };
 
-#endif /*CPP_KV_CLIENT_GRPC_H_*/
+#endif /*CPP_KEY_VALUE_CLIENT_GRPC_H_*/
