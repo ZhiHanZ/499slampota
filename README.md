@@ -29,43 +29,43 @@ Run sudo apt-get install libgflags-dev
 
 To compile the proto files, run the following:
 
-$ protoc -I ./protos --cpp_out=. ./protos/chirpkv.proto
-$ protoc -I ./protos --cpp_out=. ./protos/chirpsl.proto
-$ protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirpkv.proto 
-$ protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirpsl.proto
+protoc -I ./protos --cpp_out=. ./protos/chirp_key_value.proto
+protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirp_key_value.proto
+protoc -I ./protos --cpp_out=. ./protos/chirp_service_layer.proto
+protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirp_service_layer.proto
+g++ -Wall -std=c++11 -g -c -o chirp_key_value.pb.o chirp_key_value.pb.cc
+g++ -Wall -std=c++11 -g -c -o chirp_key_value.grpc.pb.o chirp_key_value.grpc.pb.cc
+g++ -Wall -std=c++11 -g -c -o chirp_service_layer.pb.o chirp_service_layer.pb.cc
+g++ -Wall -std=c++11 -g -c -o chirp_service_layer.grpc.pb.o chirp_service_layer.grpc.pb.cc
 
 To compile the other files, run the following:
 
-g++ -Wall -std=c++11 -g -c -o chirpsl.grpc.pb.o chirpsl.grpc.pb.cc
-g++ -Wall -std=c++11 -g -c -o chirpsl.pb.o chirpsl.pb.cc
-g++ -Wall -std=c++11 -g -c -o chirpkv.grpc.pb.o chirpkv.grpc.pb.cc
-g++ -Wall -std=c++11 -g -c -o chirpkv.pb.o chirpkv.pb.cc
-g++ -Wall -std=c++11 -g -c -o kv_backend.o kv_backend.cc
-g++ -Wall -std=c++11 -g -c -o kv_backend.o kv_backend.cc
-g++ -Wall -std=c++11 -g -c -o kv_server_grpc.o kv_server_grpc.cc
-g++ -Wall -std=c++11 -g -c -o kv_client_grpc.o kv_client_grpc.cc
-g++ -Wall -std=c++11 -g -c -o sl_backend.o sl_backend.cc
-g++ -Wall -std=c++11 -g -c -o sl_server_grpc.o sl_server_grpc.cc
-g++ -Wall -std=c++11 -g -c -o sl_client_grpc.o sl_client_grpc.cc
+g++ -Wall -std=c++11 -g -c -o key_value_backend.o key_value_backend.cc
+g++ -Wall -std=c++11 -g -c -o key_value_server_grpc.o key_value_server_grpc.cc
+g++ -Wall -std=c++11 -g -c -o key_value_client_grpc.o key_value_client_grpc.cc
+g++ -Wall -std=c++11 -g -c -o service_layer_backend.o service_layer_backend.cc
+g++ -Wall -std=c++11 -g -c -o service_layer_server_grpc.o service_layer_server_grpc.cc
+g++ -Wall -std=c++11 -g -c -o service_layer_client_grpc.o service_layer_client_grpc.cc
 g++ -Wall -std=c++11 -g -c -o client_line.o client_line.cc
+g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_
 
 To link the files, run in one terminal:
 
-$ g++ chirpkv.pb.o chirpkv.grpc.pb.o chirpsl.pb.o chirpsl.grpc.pb.o kv_client_grpc.o sl_backend.o kv_backend.o sl_client_grpc.o kv_server_grpc.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o kv
+$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o key_value_server_grpc.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o key_value
 
-$ ./kv
+$ ./key_value
 
 (make sure you've navigated to the right folder after vagrant sshing in)
 
 In another terminal:
 
-$ g++ chirpkv.pb.o chirpkv.grpc.pb.o chirpsl.pb.o chirpsl.grpc.pb.o kv_client_grpc.o sl_backend.o kv_backend.o sl_client_grpc.o sl_server_grpc.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o sl
+$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o service_layer_server_grpc.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o service_layer
 
-$ ./sl
+$ ./service_layer
 
 In another terminal:
 
-$ g++ chirpkv.pb.o chirpkv.grpc.pb.o chirpsl.pb.o chirpsl.grpc.pb.o kv_client_grpc.o sl_backend.o kv_backend.o sl_client_grpc.o client_line.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o client
+$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o client_line.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o client
 
 Now when you run ./client use the flags appropriately to register, login, chirp, reply, or monitor chirps.
 

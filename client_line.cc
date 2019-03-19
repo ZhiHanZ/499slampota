@@ -5,9 +5,9 @@
 
 #include <grpcpp/grpcpp.h>
 #include <gflags/gflags.h>
-#include "chirpsl.grpc.pb.h"
-#include "chirpsl.pb.h"
-#include "sl_client_grpc.h"
+#include "chirp_service_layer.grpc.pb.h"
+#include "chirp_service_layer.pb.h"
+#include "service_layer_client_grpc.h"
 
 DEFINE_string(options, "register,user,chirp,reply,follow,read,monitor",
                  "comma-separated list of options a user may execute in 'chirp' menu");
