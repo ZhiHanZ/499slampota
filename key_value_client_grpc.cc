@@ -1,4 +1,4 @@
-#include "kv_client_grpc.h"
+#include "key_value_client_grpc.h"
 
 KeyValueClient::KeyValueClient() {
   std::shared_ptr<grpc::Channel> channel = grpc::CreateChannel(

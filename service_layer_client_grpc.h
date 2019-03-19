@@ -1,5 +1,5 @@
-#ifndef CPP_SL_CLIENT_GRPC_H_
-#define CPP_SL_CLIENT_GRPC_H_
+#ifndef CPP_SERVICE_LAYER_CLIENT_GRPC_H_
+#define CPP_SERVICE_LAYER_CLIENT_GRPC_H_
 
 #include <iostream>
 #include <memory>
@@ -7,8 +7,8 @@
 #include <vector>
 
 #include <grpcpp/grpcpp.h>
-#include "sl_server_grpc.h"
-#include "chirpsl.grpc.pb.h"
+#include "service_layer_server_grpc.h"
+#include "chirp_service_layer.grpc.pb.h"
 
 // Service Layer Client Class that calls sl_server_grpc functions
 class ServiceLayerClient {
@@ -32,4 +32,4 @@ class ServiceLayerClient {
 	  std::unique_ptr<chirp::ServiceLayer::Stub> stub_;
 };
 
-#endif /*CPP_SL_CLIENT_GRPC_H_*/
+#endif /*CPP_SERVICE_LAYER_CLIENT_GRPC_H_*/

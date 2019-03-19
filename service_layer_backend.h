@@ -1,5 +1,5 @@
-#ifndef CPP_SL_BACKEND_H_
-#define CPP_SL_BACKEND_H_
+#ifndef CPP_SERVICE_LAYER_BACKEND_H_
+#define CPP_SERVICE_LAYER_BACKEND_H_
 
 #include <string>
 #include <map>
@@ -7,8 +7,8 @@
 #include <vector>
 
 #include <grpcpp/grpcpp.h>
-#include "kv_client_grpc.h"
-#include "chirpsl.grpc.pb.h"
+#include "key_value_client_grpc.h"
+#include "chirp_service_layer.grpc.pb.h"
 
 // service layer backend class that can strategically call the key value grpc client functions
 // like Put, Get, Delete to execute higher-level functions like Register, Chirp, Follow, Read, Monitor
@@ -34,4 +34,4 @@ class ServiceLayerBackEnd {
 		KeyValueClient key_value_client_; 
 };
 
-#endif /*CPP_SL_BACKEND_H_*/
+#endif /*CPP_SERVICE_LAYER_BACKEND_H_*/
