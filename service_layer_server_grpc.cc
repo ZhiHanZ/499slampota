@@ -1,7 +1,5 @@
 #include "service_layer_server_grpc.h"
 
-#include <iostream>
-
 grpc::Status ServiceLayerServer::registeruser(grpc::ServerContext* context, const chirp::RegisterRequest* request, chirp::RegisterReply* reply) {
   // unwrap the request's fields so that we may pass them to the ServiceLayer's data structure
   std::string username = request->username();
@@ -58,27 +56,3 @@ grpc::Status ServiceLayerServer::monitor(grpc::ServerContext* context, const chi
   service_layer_back_end_.Monitor(username, stream);
   return grpc::Status::OK;
 }
-
-void RunServer() {
-  std::string server_address("localhost:50002");
-  ServiceLayerServer service_layer;
-
-  grpc::ServerBuilder builder;
-  // Listen on the given address without any authentication mechanism.
-  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  // Register "service" as the instance through which we'll communicate with
-  // clients. In this case it corresponds to an *synchronous* service.
-  builder.RegisterService(&service_layer);
-  // Finally assemble the server.
-  std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-  std::cout << "Server listening on " << server_address << std::endl;
-
-  // Wait for the server to shutdown. Note that some other thread must be
-  // responsible for shutting down the server for this call to ever return.
-  server->Wait();
-}
-
-int main(int argc, char** argv) {
-  RunServer();
-  return 0;
-} 

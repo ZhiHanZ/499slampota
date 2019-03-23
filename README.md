@@ -47,11 +47,12 @@ g++ -Wall -std=c++11 -g -c -o service_layer_backend.o service_layer_backend.cc
 g++ -Wall -std=c++11 -g -c -o service_layer_server_grpc.o service_layer_server_grpc.cc
 g++ -Wall -std=c++11 -g -c -o service_layer_client_grpc.o service_layer_client_grpc.cc
 g++ -Wall -std=c++11 -g -c -o client_line.o client_line.cc
-g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_
+g++ -Wall -std=c++11 -g -c -o key_value_main_runnable.o key_value_main_runnable.cc
+g++ -Wall -std=c++11 -g -c -o service_layer_main_runnable.o service_layer_main_runnable.cc
 
 To link the files, run in one terminal:
 
-$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o key_value_server_grpc.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o key_value
+$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o key_value_server_grpc.o key_value_main_runnable.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o key_value
 
 $ ./key_value
 
@@ -59,7 +60,7 @@ $ ./key_value
 
 In another terminal:
 
-$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o service_layer_server_grpc.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o service_layer
+$ g++ chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o service_layer_server_grpc.o service_layer_main_runnable.cc -g -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -lgflags -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o service_layer
 
 $ ./service_layer
 
