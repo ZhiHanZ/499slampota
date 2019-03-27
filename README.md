@@ -18,11 +18,6 @@ $ make
 $ cd grpc/third_party/protobuf
 $ sudo make install
 
-finally, run:
-
-$ cd third_party/protobuf
-$ make && sudo make install
-
 You should be within the vagrant folder still, and this is where you should clone or download this repository.
 
 Run sudo apt-get install libgflags-dev
