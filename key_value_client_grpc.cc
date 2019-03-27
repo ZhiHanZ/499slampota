@@ -17,7 +17,6 @@ void KeyValueClient::Put(const std::string& key, const std::string& value) {
   grpc::ClientContext context;
   // call KeyValueServer's put function
   grpc::Status status = stub_->put(&context, request, &reply);
-  
 }
 
 std::vector<std::string> KeyValueClient::Get(const std::string& key) {
@@ -27,7 +26,8 @@ std::vector<std::string> KeyValueClient::Get(const std::string& key) {
   chirp::GetReply reply;
   grpc::ClientContext context;
   // call KeyValyeServer's get function
-  std::unique_ptr<grpc::ClientReaderWriter<chirp::GetRequest, chirp::GetReply> > stream_handle (stub_->get(&context));
+  std::unique_ptr<grpc::ClientReaderWriter<chirp::GetRequest, chirp::GetReply> >
+      stream_handle(stub_->get(&context));
   stream_handle->Write(request);
   std::vector<std::string> values;
   while (stream_handle->Read(&reply)) {

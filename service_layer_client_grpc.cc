@@ -24,7 +24,9 @@ std::string ServiceLayerClient::RegisterUser(const std::string& username) {
   return "success";
 }
 
-std::string ServiceLayerClient::Chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
+std::string ServiceLayerClient::Chirp(const std::string& username,
+                                      const std::string& text,
+                                      const std::string& parent_id) {
   // set the fields of the request to pass to ServiceLayerServer
   chirp::ChirpRequest request;
   request.set_username(username);
@@ -41,7 +43,8 @@ std::string ServiceLayerClient::Chirp(const std::string& username, const std::st
   return "success";
 }
 
-std::string ServiceLayerClient::Follow(const std::string& username, const std::string& to_follow) {
+std::string ServiceLayerClient::Follow(const std::string& username,
+                                       const std::string& to_follow) {
   // set the fields of the request to pass to ServiceLayerServer
   chirp::FollowRequest request;
   request.set_username(username);
@@ -58,7 +61,8 @@ std::string ServiceLayerClient::Follow(const std::string& username, const std::s
   return "success";
 }
 
-std::vector<chirp::Chirp> ServiceLayerClient::Read(const std::string& chirp_id) {
+std::vector<chirp::Chirp> ServiceLayerClient::Read(
+    const std::string& chirp_id) {
   // set the fields of the request to pass to ServiceLayerServer
   chirp::ReadRequest request;
   request.set_chirp_id(chirp_id);
@@ -81,15 +85,16 @@ void ServiceLayerClient::Monitor(const std::string& username) {
   chirp::MonitorReply reply;
   grpc::ClientContext context;
   // call ServiceLayerServer's monitor function
-  std::unique_ptr<grpc::ClientReader<chirp::MonitorReply> > stream_handle (stub_->monitor(&context, request));
-  //wait on incoming messages from the ServiceLayerServer
-  while(stream_handle->Read(&reply))
-  {
+  std::unique_ptr<grpc::ClientReader<chirp::MonitorReply> > stream_handle(
+      stub_->monitor(&context, request));
+  // wait on incoming messages from the ServiceLayerServer
+  while (stream_handle->Read(&reply)) {
     // print the incoming messages out as formatted chirps
     chirp::Chirp incoming_chirp = reply.chirp();
     std::cout << incoming_chirp.username() << ": " << std::endl;
     std::cout << "\"" << incoming_chirp.text() << "\"" << std::endl;
-    std::cout << "with a chirp id of: [" << incoming_chirp.id() << "]" << std::endl;
+    std::cout << "with a chirp id of: [" << incoming_chirp.id() << "]"
+              << std::endl;
     std::cout << std::endl;
   }
 }
