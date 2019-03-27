@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
       }
       if (valid_parent_id == "success") {
         std::cout << "Success chirping: " << std::endl;
-        std::cout << "" << std::endl;
+        std::cout << FLAGS_chirp << std::endl;
       } else {
         std::cout << "That parent id is nonexistant." << std::endl;
       }

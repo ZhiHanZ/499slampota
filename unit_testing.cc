@@ -81,7 +81,6 @@ TEST(SL_backend, RegisterChirpFollowReadMonitor) {
   v = slbet.Read("chirp_by: Name 1");
   EXPECT_EQ(1, v.size());
   // test the read function for a chirp thread with 2 chirps
-  std::vector<chirp::Chirp> v;
   v = slbet.Read("chirp_by: Name 0");
   EXPECT_EQ(2, v.size());
   // add a chirp to the thread
