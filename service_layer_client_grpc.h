@@ -17,16 +17,24 @@ class ServiceLayerClient {
   ServiceLayerClient();
   // destructor
   ~ServiceLayerClient();
-  // function call to the server-side grpc's version of 'registeruser'
+  // call to the server-side grpc's version of 'registeruser'
+  // returns a string that describes the success of the attempt to register
   std::string RegisterUser(const std::string& username);
-  // function call to the server-side grpc's version of 'chirp'
+  // call to the server-side grpc's version of 'chirp'
+  // returns a string that describes the success of the attempt to chirp
   std::string Chirp(const std::string& username, const std::string& text,
                     const std::string& parent_id);
-  // function call to the server-side grpc's version of 'follow'
+  // call to server-side grpc's version of 'follow' so 'username' follows
+  // 'to_follow' returns a string that describes the success of the attempt to
+  // follow
   std::string Follow(const std::string& username, const std::string& to_follow);
-  // function call to the server-side grpc's version of 'read'
+  // call to the server-side grpc's version of 'read' to read the given
+  // 'chirp_id' returns a string that describes the success of the attempt to
+  // register
   std::vector<chirp::Chirp> Read(const std::string& chirp_id);
-  // function call to the server-side grpc's version of 'monitor'
+  // call to the server-side grpc's version of 'monitor' to monitor chirps
+  // from everyone 'username' is following
+  // returns a string that describes the success of the attempt to register
   void Monitor(const std::string& username);
 
  private:

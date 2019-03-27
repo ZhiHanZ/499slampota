@@ -22,7 +22,7 @@ grpc::Status KeyValueServer::get(
   // call KeyValueBackend's Get function
   const std::vector<std::string>& kValues =
       key_value_back_end_.Get(request.key());
-
+  // store the retrieved chirps in the reply
   chirp::GetReply reply;
   for (const std::string& kVal : kValues) {
     reply.set_value(kVal);

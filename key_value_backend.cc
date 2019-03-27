@@ -1,7 +1,5 @@
 #include "key_value_backend.h"
 
-#include <iostream>
-
 KeyValueBackEnd::KeyValueBackEnd() {
   // initialize the key counter to 0 when the database is created
   std::pair<std::string, std::vector<std::string> > key_counter;
@@ -10,7 +8,7 @@ KeyValueBackEnd::KeyValueBackEnd() {
   key_counter.first = "keyCounterForDataMap";
   key_counter.second = v;
   data_map_.insert(key_counter);
-  // create newest and seen keys
+  // create newest and seen key to keep track of unseen chirps
   std::pair<std::string, std::vector<std::string> > newest_pair;
   std::vector<std::string> vector_newest;
   newest_pair.first = "newest";
@@ -33,22 +31,16 @@ std::vector<std::string> KeyValueBackEnd::Get(const std::string& key) {
   std::vector<std::string> retrieved_vector;
   if (it != data_map_.end()) {
     retrieved_vector = data_map_.at(key);
-    std::cout << "this vector was retrieved for " << key << ": " << std::endl;
-    for (unsigned int i = 0; i < retrieved_vector.size(); i++) {
-      std::cout << retrieved_vector[0] << std::endl;
-    }
   }
   return retrieved_vector;
 }
 
 void KeyValueBackEnd::Put(const std::string& key, const std::string& value) {
-  std::cout << "put " << key << " and " << value << std::endl;
   std::lock_guard<std::mutex> lock(mutex_lock);
   std::map<std::string, std::vector<std::string> >::iterator it =
       data_map_.find(key);
-  // adding to an existing key key
+  // adding to an existing key
   if (it != data_map_.end()) {
-    std::cout << key << " found in the map already" << std::endl;
     it->second.push_back(value);
     // creating a new key
   } else {
@@ -64,7 +56,6 @@ void KeyValueBackEnd::Put(const std::string& key, const std::string& value) {
 }
 
 void KeyValueBackEnd::DeleteKey(const std::string& key) {
-  std::cout << "DElete got valled" << std::endl;
   std::lock_guard<std::mutex> lock(mutex_lock);
   data_map_.erase(key);
 }
