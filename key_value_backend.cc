@@ -28,12 +28,17 @@ KeyValueBackEnd::~KeyValueBackEnd() {}
 
 std::vector<std::string> KeyValueBackEnd::Get(const std::string& key) {
 	std::lock_guard<std::mutex> lock(mutex_lock);
-	std::vector<std::string> retrieved_vector = data_map_.at(key);
-	std::cout << "this vector was retrieved for " << key << ": " << std::endl;
-	for (unsigned int i = 0; i <retrieved_vector.size(); i++)
-	{
-		std::cout << retrieved_vector[0] << std::endl;
-	}
+	std::map<std::string,std::vector<std::string> >::iterator it;
+	it = data_map_.find(key);
+	std::vector<std::string> retrieved_vector;
+  	if (it != data_map_.end()) {
+  		retrieved_vector = data_map_.at(key);
+		std::cout << "this vector was retrieved for " << key << ": " << std::endl;
+		for (unsigned int i = 0; i <retrieved_vector.size(); i++)
+		{
+			std::cout << retrieved_vector[0] << std::endl;
+		}
+  	}
 	return retrieved_vector;
 }
 

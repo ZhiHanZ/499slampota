@@ -79,3 +79,12 @@ For example:
 ./client --user Kelly --chirp "That's cool" --reply "chirp_by: Steph 0"
 ./client --user Kelly --read "chirp_by: Steph 0" 
 ./client --user Stephanie --monitor
+
+
+Unit testing:
+
+g++ -Wall -std=c++11 -g -c -o key_value_backend.o key_value_backend.cc
+g++ -Wall -std=c++11 -g -c -o service_layer_backend_testing.o service_layer_backend_testing.cc
+g++ -Wall -std=c++11 -g -c -o unit_testing.o unit_testing.cc
+g++ -Wall -std=c++11 -g -L/usr/local/lib -o unit_test unit_testing.o chirp_service_layer.pb.o service_layer_backend_testing.o key_value_backend.o -lgtest -lpthread -lprotobuf
+./unit_test

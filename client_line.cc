@@ -20,6 +20,7 @@ DEFINE_string(follow, "", "the username you wish to follow");
 DEFINE_string(read, "", "the id of the chirp you wish to read");
 DEFINE_bool(monitor, false, "call this to monitor chirps by people you follow");
 
+
 int main(int argc, char **argv)
 {
 	gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -60,7 +61,8 @@ int main(int argc, char **argv)
 				valid_parent_id = service_layer_client.Chirp(username, FLAGS_chirp, "");
 			}
 			if (valid_parent_id == "success") {
-				std::cout << "Success." << std::endl;
+				std::cout << "Success chirping: " << std::endl;
+				std::cout << "" << std::endl;
 			} else {
 				std::cout << "That parent id is nonexistant." << std::endl;
 			}
@@ -109,5 +111,6 @@ int main(int argc, char **argv)
 	}
 	return 0;
 }
+
 
 #endif
