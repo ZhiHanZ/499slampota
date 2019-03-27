@@ -8,7 +8,6 @@ ServiceLayerBackEndTesting::~ServiceLayerBackEndTesting() {}
 
 std::string ServiceLayerBackEndTesting::RegisterUser(
     const std::string& username) {
-  std::cout << username << std::endl;
   // disallow "newest" as a username, because it is reserved to hold new chirps
   if ((username == "newest") || (username == "keyCounterForDataMap") ||
       username == "registered user") {
@@ -16,9 +15,7 @@ std::string ServiceLayerBackEndTesting::RegisterUser(
   }
   // check if the username is already taken
   std::vector<std::string> v = key_value_backend_.Get(username);
-  std::cout << "size of v: " << v.size() << std::endl;
   if (!(v.empty())) {
-    std::cout << "v was not empty" << std::endl;
     return "taken";
   } else {
     key_value_backend_.Put(username, "registered user");
@@ -49,13 +46,7 @@ std::string ServiceLayerBackEndTesting::Chirp(const std::string& username,
   std::string parent_chirp_id = ch.parent_id();
   std::vector<std::string> parent_validity =
       key_value_backend_.Get(parent_chirp_id);
-  std::cout << "parent_chirp_id: " << parent_chirp_id << std::endl;
-  for (unsigned int i = 0; i < parent_validity.size(); i++) {
-    std::cout << "parval" << i << " is: " << parent_validity[i] << std::endl;
-  }
-  std::cout << "pv size: " << parent_validity.size() << std::endl;
   if ((parent_chirp_id != "") && (parent_validity.size() == 0)) {
-    std::cout << "piddne" << std::endl;
     return "parent id does not exist";
   }
   key_value_backend_.DeleteKey("keyCounterForDataMap");
@@ -78,11 +69,9 @@ std::string ServiceLayerBackEndTesting::Follow(const std::string& username,
   std::vector<std::string> does_to_follow_exist =
       key_value_backend_.Get(to_follow);
   if (does_to_follow_exist.empty()) {
-    std::cout << "no one to follow with that name" << std::endl;
     return "user to follow does not exist";
   }
   key_value_backend_.Put(username, to_follow);
-  std::cout << "callled put " << std::endl;
   return "success";
 }
 
@@ -129,21 +118,17 @@ void ServiceLayerBackEndTesting::Monitor(
     newest_chirp = recent_chirps[recent_chirps.size() - 1];
     candidate_chirp.ParseFromString(newest_chirp);
     if (candidate_chirp.id() != old_chirp_id) {
-      std::cout << "Got a new one" << std::endl;
       // mark a new chirp as now old
       old_chirp_id = candidate_chirp.id();
       // check if the chirp is by someone the user is following
       bool relevant = false;
       for (unsigned int i = 0; i < following.size(); i++) {
-        std::cout << following[i];
         if (following[i] == candidate_chirp.username()) {
-          std::cout << "And its relevant" << std::endl;
           relevant = true;
         }
       }
       // if the chirp was both new and relevant - send it
       if (relevant) {
-        std::cout << "sending... " << std::endl;
         chirp::Chirp* this_chirp = new chirp::Chirp();
         this_chirp->CopyFrom(candidate_chirp);
         chirp::MonitorReply reply;

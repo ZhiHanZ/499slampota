@@ -13,28 +13,33 @@
 class ServiceLayerServer final : public chirp::ServiceLayer::Service {
  public:
   // makes a call to the service layer backend's 'RegisterUser' function
+  // and returns a grpc Status to denote any errors or success through grpc
   grpc::Status registeruser(grpc::ServerContext* context,
                             const chirp::RegisterRequest* request,
                             chirp::RegisterReply* reply) override;
   // makes a call to the service layer backend's 'RegisterUser' function
+  // and returns a grpc Status to denote any errors or success through grpc
   grpc::Status chirp(grpc::ServerContext* context,
                      const chirp::ChirpRequest* request,
                      chirp::ChirpReply* reply) override;
   // makes a call to the service layer backend's 'RegisterUser' function
+  // and returns a grpc Status to denote any errors or success through grpc
   grpc::Status follow(grpc::ServerContext* context,
                       const chirp::FollowRequest* request,
                       chirp::FollowReply* reply) override;
   // makes a call to the service layer backend's 'RegisterUser' function
+  // and returns a grpc Status to denote any errors or success through grpc
   grpc::Status read(grpc::ServerContext* context,
                     const chirp::ReadRequest* request,
                     chirp::ReadReply* reply) override;
   // makes a call to the service layer backend's 'RegisterUser' function
+  // and returns a grpc Status to denote any errors or success through grpc
   grpc::Status monitor(
       grpc::ServerContext* context, const chirp::MonitorRequest* request,
       grpc::ServerWriter<chirp::MonitorReply>* stream) override;
 
  private:
-  // private instance of service layer's backend so that we can call it's
+  // private instance of service layer's backend so that we can call its
   // functions
   ServiceLayerBackEnd service_layer_back_end_;
 };

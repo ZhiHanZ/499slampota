@@ -20,16 +20,19 @@ class ServiceLayerBackEndTesting {
   ServiceLayerBackEndTesting();
   // destructor
   ~ServiceLayerBackEndTesting();
-  // places/registers a user in the key value storage
+  // places/registers a user in the key value storage and returns a string
+  // that describes success of the attempt
   std::string RegisterUser(const std::string& username);
-  // places a chirp object into key value storage
-  // can be placed in on its own or as a reply
+  // places a chirp object into key value either on its own or as a reply
+  // returns a string describing success of the attempt
   std::string Chirp(const std::string& username, const std::string& text,
                     const std::string& parent_id);
   // allows 'username' to follow 'to_follow' by adding 'to_follow' to the set of
-  // users that 'username' is following
+  // users 'username' is following. Returns a string describing success of the
+  // attempt
   std::string Follow(const std::string& username, const std::string& to_follow);
   // finds the chirp with the given chirp_id in the key value storage
+  // and returns a vector of the thread of chirps in reply to that chirp_id
   std::vector<chirp::Chirp> Read(const std::string& chirp_id);
   // allows a constant stream of incoming chirps to be returned to the
   // 'username' who wishes to monitor chirps

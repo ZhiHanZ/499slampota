@@ -18,11 +18,13 @@ class KeyValueClient {
   // destructor
   ~KeyValueClient();
   // function call to the key-value store's server-side grpc version of 'put'
+  // to store the arguments 'key' and 'value'
   void Put(const std::string& key, const std::string& value);
   // function call to the key-value store's server-side grpc version of 'get'
+  // to retrieve argument 'key' from the backend
   std::vector<std::string> Get(const std::string& key);
   // function call to the key-value store's server-side grpc version of
-  // 'deletekey'
+  // 'deletekey' in order to delete the backend's 'key' and associated value
   void DeleteKey(const std::string& key);
 
  private:
