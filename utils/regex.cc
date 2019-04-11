@@ -22,6 +22,6 @@ vector<string> HashParser(const string& subject) {
     next++;
   }
   return tags;
-}  // namespace utils
+}
 
 }  // namespace utils
