@@ -1,15 +1,15 @@
-
 #include "regex.h"
 #include <iostream>
 #include <regex>
 #include <string>
 #include <vector>
+
 using std::regex;
 using std::smatch;
 using std::sregex_iterator;
 using std::vector;
+
 namespace utils {
-// find all hashtags in string subject and put them into a vector
 vector<string> HashParser(const string& subject) {
   // find all candidates # with at least one char
   regex re("#[^\\s]+");
