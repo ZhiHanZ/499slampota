@@ -1,11 +1,26 @@
 
+#include <gtest/gtest.h>
 #include <cstddef>
 #include <string>
 #include <vector>
+#include "chirp_service_layer.grpc.pb.h"
 #include "key_value_backend.h"
 #include "service_layer_backend_testing.h"
 
-#include <gtest/gtest.h>
+using std::string;
+namespace unittest {
+// Can send a chirp automaticly given name time in ms and the number of chirps
+void AutoChirp(ServiceLayerBackEndTesting& service, const std::string& name,
+               int micro, int chirp_num) {
+  int i = 0;
+  while (i != chirp_num) {
+    string text{"Hello World + #1 " + std::to_string(i)};
+    std::this_thread::sleep_for(milliseconds(micro));
+    auto str = service.Chirp(name, text, "");
+    i++;
+  }
+}
+}  // namespace unittest
 
 // tests for the Key Value Backend's Put, Get, and DeleteKey functions
 TEST(KV_backend, PutGetDelete) {
@@ -89,8 +104,60 @@ TEST(SL_backend, RegisterChirpFollowReadMonitor) {
   v = slbet.Read("chirp_by: Name 0");
   EXPECT_EQ(3, v.size());
 }
+// test whether we can persistent tags and there related chirps into client
+TEST(test, SimpleTags) {
+  ServiceLayerBackEndTesting slbet;
+  auto str = slbet.Chirp("Name", "first #1 tweet", "");
+  EXPECT_EQ(str, "success");
+  std::string tag = "#1";
+  auto chirp = slbet.GetTagInfo(tag);
+  EXPECT_EQ("Name", (*chirp).username());
+  EXPECT_EQ("first #1 tweet", (*chirp).text());
+  EXPECT_EQ("", (*chirp).parent_id());
+  str = slbet.Chirp("Name", "second #1 tweet #2 # ", "");
+  EXPECT_EQ(str, "success");
+  tag = "#1";
+  chirp = slbet.GetTagInfo(tag);
+  EXPECT_EQ("Name", (*chirp).username());
+  EXPECT_EQ("second #1 tweet #2 # ", (*chirp).text());
+  EXPECT_EQ("", (*chirp).parent_id());
+  tag = "#2";
+  chirp = slbet.GetTagInfo(tag);
+  EXPECT_EQ("Name", (*chirp).username());
+  EXPECT_EQ("second #1 tweet #2 # ", (*chirp).text());
+  EXPECT_EQ("", (*chirp).parent_id());
+  tag = "# ";
+  chirp = slbet.GetTagInfo(tag);
+  EXPECT_EQ(std::nullopt, chirp);
+}
+TEST(test, stream) {
+  ServiceLayerBackEndTesting service;
+  std::vector<chirp::Chirp> buffer;
+  chirp::StreamRequest stream_request;
+  stream_request.set_hashtag("#1");
+  chirp::StreamReply stream_reply;
+  std::thread th1(unittest::AutoChirp, std::ref(service), "Adam", 100, 3);
+  //  A modified version of monitor which will automatically exit
+  //  if time passed 510 ms in here
+  auto th2 = service.StreamBuffer(&stream_reply, buffer);
+  service.OpenBuffer();
+  service.SetNumStreamLoop(100);
+  service.Stream(&stream_request, &stream_reply);
+  // Set the value in promise
+  // Wait for thread to join
+  th1.join();
+  th2.join();
+  EXPECT_EQ(3, buffer.size());
+  int i = 0;
+  for (auto v : buffer) {
+    EXPECT_EQ("Adam", v.username());
+    auto textstr = "Hello World + #1 " + std::to_string(i);
+    EXPECT_EQ(textstr, v.text());
+    i++;
+  }
+}
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
