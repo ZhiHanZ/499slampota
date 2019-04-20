@@ -155,7 +155,7 @@ void ServiceLayerBackEndTesting::ChirpStream(chirp::Chirp& chirp) {
   auto all_tags = HashParser(text);
   std::string serial_chirp;
   chirp.SerializeToString(&serial_chirp);
-  for (auto tag : all_tags) {
+  for (const auto& tag : all_tags) {
     auto vec = key_value_backend_.Get(tag);
     // ensure that tag always map to the most updated chirp
     if (vec.size() == 0) {
@@ -172,7 +172,7 @@ void ServiceLayerBackEndTesting::ChirpStream(chirp::Chirp& chirp) {
 std::optional<chirp::Chirp> ServiceLayerBackEndTesting::GetTagInfo(
     const std::string& tag) {
   auto vec = key_value_backend_.Get(tag);
-  if (vec.size() != 0) {
+  if (!vec.empty()) {
     chirp::Chirp chirp;
     chirp.ParseFromString(vec[0]);
     return chirp;
@@ -235,9 +235,14 @@ void ServiceLayerBackEndTesting::Stream(const chirp::StreamRequest* request,
 //  Stream Buffer Service puts reply chirp into buffer
 std::thread ServiceLayerBackEndTesting::StreamBuffer(
     const chirp::StreamReply* reply, vector<chirp::Chirp>& buffer) {
-  //lock condition: either get a chirp or we finished streaming
+  //  lock condition: either get a chirp or we finished streaming
+  std::thread thr([this, reply, &buffer](){StreamBufferHelper(reply, buffer);});
+  return thr;
+}
+//  Stream Buffer Service puts reply chirp into buffer
+void ServiceLayerBackEndTesting::StreamBufferHelper(const chirp::StreamReply* reply, vector<chirp::Chirp>& buffer) {
+  //  lock condition: either get a chirp or we finished streaming
   auto lock_cond = [this] { return stream_exit_flag_ || stream_flag_; };
-  std::thread thr([this, reply, lock_cond, &buffer] {
     while (true) {
       std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
       stream_buf_signal_.wait(monitor_lk, lock_cond);
@@ -248,8 +253,6 @@ std::thread ServiceLayerBackEndTesting::StreamBuffer(
       monitor_lk.unlock();
       stream_buf_signal_.notify_all();
     }
-  });
-  return thr;
 }
 // set reply through reply_chrp (no need for memory management
 void ServiceLayerBackEndTesting::StreamSet(chirp::StreamReply* reply,
