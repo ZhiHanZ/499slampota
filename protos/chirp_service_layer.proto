@@ -58,11 +58,22 @@ message MonitorRequest {
 message MonitorReply {
   Chirp chirp = 1;
 }
-
+message TagChirps {
+  string tag = 1; //chirp tag
+  repeated Chirp chirps = 2;  // all chirps in tag
+  Timestamp timestamp = 3; // the newest taged chirp post time 
+}
+message StreamRequest {
+  string hashtag = 1;
+}
+message StreamReply {
+  Chirp chirp = 1; 
+}
 service ServiceLayer {
   rpc registeruser (RegisterRequest) returns (RegisterReply) {}
   rpc chirp (ChirpRequest) returns (ChirpReply) {}
   rpc follow (FollowRequest) returns (FollowReply) {}
   rpc read (ReadRequest) returns (ReadReply) {}
   rpc monitor (MonitorRequest) returns (stream MonitorReply) {}
+  rpc Stream (StreamRequest) returns (stream StreamReply) {}
 }
