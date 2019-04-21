@@ -235,7 +235,6 @@ void ServiceLayerBackEndTesting::Stream(const chirp::StreamRequest* request,
 //  Stream Buffer Service puts reply chirp into buffer
 std::thread ServiceLayerBackEndTesting::StreamBuffer(
     const chirp::StreamReply* reply, vector<chirp::Chirp>& buffer) {
-  //  lock condition: either get a chirp or we finished streaming
   std::thread thr([this, reply, &buffer](){StreamBufferHelper(reply, buffer);});
   return thr;
 }
