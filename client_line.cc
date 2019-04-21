@@ -20,6 +20,7 @@ DEFINE_string(reply, "", "the id of the chirp you wish to reply to");
 DEFINE_string(follow, "", "the username you wish to follow");
 DEFINE_string(read, "", "the id of the chirp you wish to read");
 DEFINE_bool(monitor, false, "call this to monitor chirps by people you follow");
+DEFINE_string(stream, "", "the hashtag you wish to read");
 
 int main(int argc, char **argv) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
@@ -115,6 +116,9 @@ int main(int argc, char **argv) {
     } else {
       std::cout << "Please login with a username." << std::endl;
     }
+  }
+  if (FLAGS_stream.size() > 0) {
+    service_layer_client.Stream(FLAGS_stream);
   }
   return 0;
 }

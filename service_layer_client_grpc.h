@@ -1,5 +1,5 @@
-#ifndef CPP_SERVICE_LAYER_CLIENT_GRPC_H_
-#define CPP_SERVICE_LAYER_CLIENT_GRPC_H_
+#ifndef SERVICE_LAYER_CLIENT_GRPC_H_
+#define SERVICE_LAYER_CLIENT_GRPC_H_
 
 #include <iostream>
 #include <memory>
@@ -36,10 +36,12 @@ class ServiceLayerClient {
   // from everyone 'username' is following
   // returns a string that describes the success of the attempt to register
   void Monitor(const std::string& username);
+  // call to the service side Stream operation monitor on hashtag updates
+  void Stream(const std::string& hashtag);
 
  private:
   // unique pointer to the ServiceLayerServer
   std::unique_ptr<chirp::ServiceLayer::Stub> stub_;
 };
 
-#endif /*CPP_SERVICE_LAYER_CLIENT_GRPC_H_*/
+#endif /*SERVICE_LAYER_CLIENT_GRPC_H_*/
