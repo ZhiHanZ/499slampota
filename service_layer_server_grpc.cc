@@ -1,5 +1,4 @@
 #include "service_layer_server_grpc.h"
-#include <vector>
 
 grpc::Status ServiceLayerServer::registeruser(
     grpc::ServerContext* context, const chirp::RegisterRequest* request,

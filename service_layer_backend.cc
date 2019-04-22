@@ -1,6 +1,11 @@
 #include "service_layer_backend.h"
 
 #include <iostream>
+#include <optional>
+#include "utils/regex.h"
+#include "utils/stream_helper.h"
+using utils::GetTime;
+using utils::HashParser;
 
 ServiceLayerBackEnd::ServiceLayerBackEnd() {}
 
@@ -60,6 +65,7 @@ std::string ServiceLayerBackEnd::Chirp(const std::string& username,
   // place the chirp in the "newest" key so that monitoring users may access it
   key_value_client_.DeleteKey("newest");
   key_value_client_.Put("newest", serialized_chirp);
+  ChirpStream(ch);
   return "success";
 }
 
@@ -134,4 +140,110 @@ void ServiceLayerBackEnd::Monitor(
       }
     }
   }
+}
+// append current time to chirp and put chirps into their tag categories
+void ServiceLayerBackEnd::ChirpStream(chirp::Chirp& chirp) {
+  // Add timestamp to current chirp
+  auto time = GetTime();
+  chirp.mutable_timestamp()->set_seconds(time.seconds());
+  chirp.mutable_timestamp()->set_useconds(time.useconds());
+  auto text = chirp.text();
+  auto all_tags = HashParser(text);
+  std::string serial_chirp;
+  chirp.SerializeToString(&serial_chirp);
+  for (const auto& tag : all_tags) {
+    auto vec = key_value_client_.Get(tag);
+    // ensure that tag always map to the most updated chirp
+    if (vec.empty()) {
+      key_value_client_.Put(tag, serial_chirp);
+    } else {
+      key_value_client_.DeleteKey(tag);
+      key_value_client_.Put(tag, serial_chirp);
+    }
+  }
+}
+
+// Get hashtag's chirp through tag and return std::nullopt if
+// such tag have no chirp
+std::pair<chirp::Chirp, bool> ServiceLayerBackEnd::GetTagInfo(
+    const std::string& tag) {
+  auto vec = key_value_client_.Get(tag);
+  chirp::Chirp chirp;
+  if (!vec.empty()) {
+    chirp.ParseFromString(vec[0]);
+    return std::make_pair(chirp, true);
+  }
+  return std::make_pair(chirp, false);
+}
+
+// Stream service
+void ServiceLayerBackEnd::Stream(
+    const chirp::StreamRequest* request,
+    grpc::ServerWriter<chirp::StreamReply>* reply) {
+  auto tag = request->hashtag();
+  auto time_interval = stream_refresh_timeval_;
+  int64_t curr_loop = 0;
+  auto time = GetTime();
+  while (curr_loop != stream_refresh_times_) {
+    std::this_thread::sleep_for(time_interval);
+    auto chirp_info = GetTagInfo(tag);
+    if (chirp_info.second &&
+        (chirp_info.first).timestamp().useconds() > time.useconds()) {
+      std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
+      if (stream_buff_mode_) {
+        stream_buf_signal_.wait(monitor_lk, [this] { return !stream_flag_; });
+      }
+      chirp::StreamReply streamreply;
+      chirp::Chirp chirp = chirp_info.first;
+      StreamSet(&streamreply, chirp);
+      reply->Write(streamreply);
+      stream_flag_ = true;
+      monitor_lk.unlock();
+      stream_buf_signal_.notify_one();
+      time.set_useconds((chirp).timestamp().useconds());
+    }
+    if (stream_refresh_times_ != -1) {
+      curr_loop++;
+    }
+  }
+  std::lock_guard<std::mutex> lk(stream_mutex_);
+  stream_exit_flag_ = true;
+  stream_refresh_times_ = -1;
+  stream_buf_signal_.notify_one();
+  return;
+}
+//  Stream Buffer Service
+std::thread ServiceLayerBackEnd::StreamBuffer(const chirp::StreamReply* reply,
+                                              vector<chirp::Chirp>& buffer) {
+  std::thread thr(
+      [this, reply, &buffer]() { StreamBufferHelper(reply, buffer); });
+  return thr;
+}
+
+//  Stream Buffer Service puts reply chirp into buffer
+void ServiceLayerBackEnd::StreamBufferHelper(const chirp::StreamReply* reply,
+                                             vector<chirp::Chirp>& buffer) {
+  //  lock condition: either get a chirp or we finished streaming
+  auto lock_cond = [this] { return stream_exit_flag_ || stream_flag_; };
+  while (true) {
+    std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
+    stream_buf_signal_.wait(monitor_lk, lock_cond);
+    if (stream_exit_flag_) return;
+    chirp::Chirp curr = reply->chirp();
+    buffer.push_back(curr);
+    stream_flag_ = false;
+    monitor_lk.unlock();
+    stream_buf_signal_.notify_all();
+  }
+}
+void ServiceLayerBackEnd::StreamSet(chirp::StreamReply* reply,
+                                    const chirp::Chirp& reply_chirp) {
+  reply->mutable_chirp()->set_id(reply_chirp.id());
+  reply->mutable_chirp()->set_username(reply_chirp.username());
+  reply->mutable_chirp()->set_text(reply_chirp.text());
+  reply->mutable_chirp()->set_parent_id(reply_chirp.parent_id());
+  reply->mutable_chirp()->mutable_timestamp()->set_seconds(
+      reply_chirp.timestamp().seconds());
+  reply->mutable_chirp()->mutable_timestamp()->set_useconds(
+      reply_chirp.timestamp().useconds());
 }
