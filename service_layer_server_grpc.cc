@@ -1,4 +1,5 @@
 #include "service_layer_server_grpc.h"
+#include <vector>
 
 grpc::Status ServiceLayerServer::registeruser(
     grpc::ServerContext* context, const chirp::RegisterRequest* request,
@@ -74,5 +75,11 @@ grpc::Status ServiceLayerServer::monitor(
   // data structure
   std::string username = request->username();
   service_layer_back_end_.Monitor(username, stream);
+  return grpc::Status::OK;
+}
+grpc::Status ServiceLayerServer::Stream(
+    grpc::ServerContext* context, const chirp::StreamRequest* request,
+    grpc::ServerWriter<chirp::StreamReply>* stream)  {
+  service_layer_back_end_.Stream(request, stream);
   return grpc::Status::OK;
 }

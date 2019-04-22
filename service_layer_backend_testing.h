@@ -53,8 +53,11 @@ class ServiceLayerBackEndTesting {
   std::optional<chirp::Chirp> GetTagInfo(const std::string& tag);
   // Keep track of current stream infomation given hashTag
   void Stream(const chirp::StreamRequest* request, chirp::StreamReply* reply);
+  // buffer messages in chirps
   std::thread StreamBuffer(const chirp::StreamReply* reply,
                            vector<chirp::Chirp>& buffer);
+  void StreamBufferHelper(const chirp::StreamReply* reply, 
+                          vector<chirp::Chirp>& buffer);
   // allow StreamBuffer service to buffer received Stream data
   void OpenBuffer() { stream_buff_mode_ = true; }
   // close Buffer service for stream
