@@ -46,8 +46,6 @@ class ServiceLayerBackEndTesting {
   // 'username' who wishes to monitor chirps
   void Monitor(const std::string& username,
                grpc::ServerWriter<chirp::MonitorReply>* stream);
-  // allocates chirps into several different tags
-  void ChirpStream(chirp::Chirp& chirp);
   // Get the current chirp in tag
   // if there do not have a tag return a empty string
   std::optional<chirp::Chirp> GetTagInfo(const std::string& tag);
@@ -71,10 +69,12 @@ class ServiceLayerBackEndTesting {
   auto GetStreamTimeVal() { return stream_refresh_timeval_; }
   // Change Stream refresh time interval
   auto SetRefreshTimeVal(int wait_time) { stream_refresh_timeval_ = 5ms; }
-  // allocate the value of StreamReply in stack
-  void StreamSet(chirp::StreamReply* reply, const chirp::Chirp& reply_chirp);
 
  private:
+  // allocates chirps into several different tags
+  void ChirpStream(chirp::Chirp& chirp);
+  // allocate the value of StreamReply in stack
+  void StreamSet(chirp::StreamReply* reply, const chirp::Chirp& reply_chirp);
   // instance of the key value client (grpc) on which to call Put, Get, and
   // Delete
   KeyValueBackEnd key_value_backend_;
