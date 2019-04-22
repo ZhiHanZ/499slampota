@@ -98,3 +98,17 @@ void ServiceLayerClient::Monitor(const std::string& username) {
     std::cout << std::endl;
   }
 }
+void ServiceLayerClient::Stream(const std::string& hashtag) {
+  chirp::StreamRequest request;
+  chirp::StreamReply reply;
+  request.set_hashtag(hashtag);
+  grpc::ClientContext context;
+  auto stream = stub_->Stream(&context, request);
+  while (stream->Read(&reply)) {
+    auto chirp = reply.chirp();
+    std::cout << chirp.username() << ": " << std::endl;
+    std::cout << chirp.text() << std::endl;
+    std::cout << "chirp id: " << chirp.id() << std::endl;
+    std::cout << std::endl;
+  }
+}
