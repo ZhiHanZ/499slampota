@@ -71,6 +71,7 @@ class ServiceLayerBackEnd {
 
  private:
   // allocates chirps into several different tags
+  // append current time to chirp and put chirps into their tag categories
   void ChirpStream(chirp::Chirp& chirp);
   // allocate the value of StreamReply in stack
   void StreamSet(chirp::StreamReply* reply, const chirp::Chirp& reply_chirp);

@@ -141,7 +141,6 @@ void ServiceLayerBackEnd::Monitor(
     }
   }
 }
-// append current time to chirp and put chirps into their tag categories
 void ServiceLayerBackEnd::ChirpStream(chirp::Chirp& chirp) {
   // Add timestamp to current chirp
   auto time = GetTime();
@@ -184,12 +183,16 @@ void ServiceLayerBackEnd::Stream(
   auto time_interval = stream_refresh_timeval_;
   int64_t curr_loop = 0;
   auto time = GetTime();
+  //either loop forever or loop stream_refresh_times_
   while (curr_loop != stream_refresh_times_) {
+    //default value is 5ms
     std::this_thread::sleep_for(time_interval);
     auto chirp_info = GetTagInfo(tag);
+    //  update current chirp
     if (chirp_info.second &&
         (chirp_info.first).timestamp().useconds() > time.useconds()) {
       std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
+      // if buffer mode is on, buffer them into another vector
       if (stream_buff_mode_) {
         stream_buf_signal_.wait(monitor_lk, [this] { return !stream_flag_; });
       }
