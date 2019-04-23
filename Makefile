@@ -10,7 +10,7 @@ GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
 PROTOS_PATH = protos/
 vpath %.proto $(PROTOS_PATH)
-all: chirp_service_layer.grpc.pb.cc chirp_key_value.grpc.pb.cc chirp_key_value.pb.cc chirp_service_layer.pb.cc
+all: chirp_service_layer.grpc.pb.cc chirp_key_value.grpc.pb.cc chirp_key_value.pb.cc chirp_service_layer.pb.cc key_value service_layer client
 key_value: chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o utils/regex.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o key_value_server_grpc.o key_value_main_runnable.cc
 	$(CXX) $^ $(LDFLAGS) -g -o $@
 service_layer: chirp_key_value.pb.o chirp_key_value.grpc.pb.o chirp_service_layer.pb.o chirp_service_layer.grpc.pb.o key_value_client_grpc.o utils/regex.o service_layer_backend.o key_value_backend.o service_layer_client_grpc.o service_layer_server_grpc.o service_layer_main_runnable.cc

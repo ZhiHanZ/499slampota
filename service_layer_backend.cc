@@ -183,9 +183,9 @@ void ServiceLayerBackEnd::Stream(
   auto time_interval = stream_refresh_timeval_;
   int64_t curr_loop = 0;
   auto time = GetTime();
-  //either loop forever or loop stream_refresh_times_
+  // either loop forever or loop stream_refresh_times_
   while (curr_loop != stream_refresh_times_) {
-    //default value is 5ms
+    // default value is 5ms
     std::this_thread::sleep_for(time_interval);
     auto chirp_info = GetTagInfo(tag);
     //  update current chirp
@@ -194,7 +194,9 @@ void ServiceLayerBackEnd::Stream(
       std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
       // if buffer mode is on, buffer them into another vector
       if (stream_buff_mode_) {
-        stream_buf_signal_.wait(monitor_lk, [this] { return !stream_flag_; });
+        stream_buf_signal_.wait(monitor_lk, [& stream_flag = stream_flag_] {
+          return !stream_flag;
+        });
       }
       chirp::StreamReply streamreply;
       chirp::Chirp chirp = chirp_info.first;
@@ -227,7 +229,10 @@ std::thread ServiceLayerBackEnd::StreamBuffer(const chirp::StreamReply* reply,
 void ServiceLayerBackEnd::StreamBufferHelper(const chirp::StreamReply* reply,
                                              vector<chirp::Chirp>& buffer) {
   //  lock condition: either get a chirp or we finished streaming
-  auto lock_cond = [this] { return stream_exit_flag_ || stream_flag_; };
+  auto lock_cond = [& exit_flag = stream_exit_flag_,
+                    &stream_flag = stream_flag_] {
+    return exit_flag || stream_flag;
+  };
   while (true) {
     std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
     stream_buf_signal_.wait(monitor_lk, lock_cond);
