@@ -203,7 +203,7 @@ void ServiceLayerBackEndTesting::Stream(const chirp::StreamRequest* request,
   auto time_interval = stream_refresh_timeval_;
   int64_t curr_loop = 0;
   auto time = GetTime();
-  //stream_refresh_times by default is -1 which means a infinite loop
+  // stream_refresh_times by default is -1 which means a infinite loop
   while (curr_loop != stream_refresh_times_) {
     std::this_thread::sleep_for(time_interval);
     auto chirp = GetTagInfo(tag);
@@ -213,7 +213,9 @@ void ServiceLayerBackEndTesting::Stream(const chirp::StreamRequest* request,
     if (chirp && (*chirp).timestamp().useconds() > time.useconds()) {
       std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
       if (stream_buff_mode_) {
-        stream_buf_signal_.wait(monitor_lk, [this] { return !stream_flag_; });
+        stream_buf_signal_.wait(monitor_lk, [& stream_flag = stream_flag_] {
+          return !stream_flag;
+        });
       }
       StreamSet(reply, *chirp);
       stream_flag_ = true;
@@ -227,7 +229,7 @@ void ServiceLayerBackEndTesting::Stream(const chirp::StreamRequest* request,
   }
   std::lock_guard<std::mutex> lk(stream_mutex_);
   stream_exit_flag_ = true;
-  //once we finish refresh time go back to default value
+  // once we finish refresh time go back to default value
   stream_refresh_times_ = -1;
   stream_buf_signal_.notify_one();
   return;
@@ -235,23 +237,28 @@ void ServiceLayerBackEndTesting::Stream(const chirp::StreamRequest* request,
 //  Stream Buffer Service puts reply chirp into buffer
 std::thread ServiceLayerBackEndTesting::StreamBuffer(
     const chirp::StreamReply* reply, vector<chirp::Chirp>& buffer) {
-  std::thread thr([this, reply, &buffer](){StreamBufferHelper(reply, buffer);});
+  std::thread thr(
+      [this, reply, &buffer]() { StreamBufferHelper(reply, buffer); });
   return thr;
 }
 //  Stream Buffer Service puts reply chirp into buffer
-void ServiceLayerBackEndTesting::StreamBufferHelper(const chirp::StreamReply* reply, vector<chirp::Chirp>& buffer) {
+void ServiceLayerBackEndTesting::StreamBufferHelper(
+    const chirp::StreamReply* reply, vector<chirp::Chirp>& buffer) {
   //  lock condition: either get a chirp or we finished streaming
-  auto lock_cond = [this] { return stream_exit_flag_ || stream_flag_; };
-    while (true) {
-      std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
-      stream_buf_signal_.wait(monitor_lk, lock_cond);
-      if (stream_exit_flag_) return;
-      chirp::Chirp curr = reply->chirp();
-      buffer.push_back(curr);
-      stream_flag_ = false;
-      monitor_lk.unlock();
-      stream_buf_signal_.notify_all();
-    }
+  auto lock_cond = [& exit_flag = stream_exit_flag_,
+                    &stream_flag = stream_flag_] {
+    return exit_flag || stream_flag;
+  };
+  while (true) {
+    std::unique_lock<std::mutex> monitor_lk(stream_mutex_);
+    stream_buf_signal_.wait(monitor_lk, lock_cond);
+    if (stream_exit_flag_) return;
+    chirp::Chirp curr = reply->chirp();
+    buffer.push_back(curr);
+    stream_flag_ = false;
+    monitor_lk.unlock();
+    stream_buf_signal_.notify_all();
+  }
 }
 // set reply through reply_chrp (no need for memory management
 void ServiceLayerBackEndTesting::StreamSet(chirp::StreamReply* reply,

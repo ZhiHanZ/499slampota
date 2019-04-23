@@ -24,6 +24,11 @@ Run sudo apt-get install libgflags-dev
 
 To compile the proto files, run the following:
 
+```
+make
+// if you want to make unit tests
+make unit_testing
+```
 protoc -I ./protos --cpp_out=. ./protos/chirp_key_value.proto
 protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirp_key_value.proto
 protoc -I ./protos --cpp_out=. ./protos/chirp_service_layer.proto
