@@ -28,6 +28,12 @@ To compile the proto files, run the following:
 make
 // if you want to make unit tests
 make unit_testing
+//open key_value store
+./key_value
+//open service
+./service_layer
+// to stream one given hashtag
+ ./client -stream=#hello // monitor hello hashtag
 ```
 protoc -I ./protos --cpp_out=. ./protos/chirp_key_value.proto
 protoc -I ./protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/chirp_key_value.proto
